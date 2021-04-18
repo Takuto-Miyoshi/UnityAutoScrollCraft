@@ -4716,3 +4716,8 @@ AutoScrollCraft/Library/StateCache/MainStageHierarchy/46/46b7ed276a509ddf4044a58
 AutoScrollCraft/Library/StateCache/SceneView/99/99e7adb8e61ea8e87bb40b6a387def85.json
 AutoScrollCraft/Logs/Packages-Update.log
 AutoScrollCraft/Logs/shadercompiler-UnityShaderCompiler.exe0.log
+AutoScrollCraft/.vscode/
+AutoScrollCraft/Library/
+AutoScrollCraft/Logs/
+AutoScrollCraft/Temp/
+AutoScrollCraft/obj/
