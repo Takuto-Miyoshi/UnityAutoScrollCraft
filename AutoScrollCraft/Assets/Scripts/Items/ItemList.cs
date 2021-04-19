@@ -8,6 +8,7 @@ namespace Enum {
 		Null,
 		Wood,
 		Stone,
+		Pork,
 	};
 }
 
