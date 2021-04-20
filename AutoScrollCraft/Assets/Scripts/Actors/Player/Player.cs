@@ -1,28 +1,48 @@
 using System;
 using System.Collections;
-using Enum;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using Enums;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour {
 	Rigidbody rb;
+	float respawnTime;
+
+	// ステータス
+	Status status;
+	bool isDead;
+	// スタミナ
+	const float staminaRechargeReady = 3.0f;    // スタミナ回復が始まるまでの時間
+	float staminaRechargeTimer;
+	// ダッシュ
+	const int dashCost = 10;    // 消費スタミナ
+	const float dashInterval = 1.0f;    // ダッシュ間隔
+	float dashTimer;
+	const float dashPower = 30.0f;  // AddForceのパワー
+	const float dashRange = 4.0f;   // どれだけダッシュしたら止まるか
+	Vector3 dashStart;
+
+	// 移動
 	[SerializeField] Transform camTrans;
 	Vector2 axis;
 	bool canMove;
 	[SerializeField] float speed;
 	Vector3 latestPos;
 
-	float respawnTime;
-
 	// インタラクト
 	[SerializeField] Interact interact;
-	[SerializeField] float interactInterval;
+	[SerializeField] float interactInterval;    // 間隔
 	float interactTimer;
+	const int interactCost = 5; // 消費スタミナ
 
 	// インベントリ
-	const int MaxInventory = 3;
-	const int MaxVolume = 10;
-	struct ItemData {
+	const int maxInventory = 3;
+	const int maxVolume = 10;
+	public struct ItemData {
 		Items item;
 		public Items Item {
 			get { return item; }
@@ -34,13 +54,27 @@ public class Player : MonoBehaviour {
 			set { volume = value; }
 		}
 	}
-	ItemData[] inventory = new ItemData[MaxInventory];
+	ItemData[] inventory = new ItemData[maxInventory];
+	public ItemData[] Inventory {
+		get { return inventory; }
+	}
+	[SerializeField] Inventory inventoryUI;
+	int currentSelect;
+	public int CurrentSelect {
+		get { return currentSelect; }
+	}
+
+	//----------------------------------------------------------------------
 
 	// Start is called before the first frame update
 	void Start () {
-		latestPos = transform.position;
 		rb = GetComponent<Rigidbody> ();
+		status = GetComponent<Status> ();
+
 		respawnTime = 5.0f;
+		staminaRechargeTimer = staminaRechargeReady;
+		latestPos = transform.position;
+		isDead = false;
 		canMove = true;
 		interactTimer = interactInterval;
 	}
@@ -66,17 +100,67 @@ public class Player : MonoBehaviour {
 			}
 
 			// 落ちた場合
-			if (transform.position.y <= -1) {
+			if (transform.position.y <= 0) {
 				canMove = false;
+				isDead = true;
 				Invoke ( "Respawn", respawnTime );
+			}
+		}
+		else if (canMove == false && isDead == false) {
+			// 一定距離移動した　ダッシュできるようになったら(スタック対策)
+			if ((dashStart - transform.position).magnitude > dashRange || dashTimer < 0) {
+				rb.velocity = Vector3.zero;
+				canMove = true;
 			}
 		}
 
 		interactTimer -= Time.deltaTime;
 	}
 
-	// 入力値の更新
+	void Update () {
+		dashTimer -= Time.deltaTime;
+
+		// スタミナ回復
+		staminaRechargeTimer -= Time.deltaTime;
+		if (staminaRechargeTimer < 0 && status.Stamina < status.MaxStamina) {
+			staminaRechargeTimer = 0.1f;
+			status.Stamina++;
+		}
+	}
+
+	// 画面の中心に戻す
+	void Respawn () {
+		var pos = new Vector3 ( camTrans.position.x, 1, 10 );
+		transform.position = pos;
+		rb.velocity = Vector3.zero;
+		canMove = true;
+		isDead = false;
+	}
+
+	void OnCollisionEnter ( Collision collision ) {
+		// アイテム取得
+		if (collision.gameObject.tag == "DropItem") {
+			var i = collision.gameObject.GetComponent<DropItem> ().Item;
+			for (int n = 0; n < maxInventory; n++) {
+				if (CanBeTakeItem ( n, i )) {
+					inventory[n].Item = i;
+					inventory[n].Volume++;
+					Destroy ( collision.gameObject );
+					inventoryUI.UpdateInventoryUI ( this );
+					break;
+				}
+			}
+		}
+	}
+
+	// アイテムを取得できるか
+	bool CanBeTakeItem ( int num, Items fallenItem ) {
+		return ((inventory[num].Item == fallenItem || inventory[num].Item == Items.Null) && inventory[num].Volume < maxVolume);
+	}
+
+	// ---------------入力系---------------------------
 	public void OnMove ( InputValue value ) {
+		// 入力値の更新
 		axis = value.Get<Vector2> ();
 	}
 
@@ -84,34 +168,34 @@ public class Player : MonoBehaviour {
 		if (interact.Target == null) return;
 		if (interactTimer > 0) return;
 
+		status.Stamina -= interactCost;
+		staminaRechargeTimer = staminaRechargeReady;
 		interact.Target.GetComponent<Status> ().Hp--;
 		interactTimer = interactInterval;
 	}
 
-	// 画面の中心に戻す
-	void Respawn () {
-		var pos = new Vector3 ( camTrans.position.x, 1.5f, 10.0f );
-		transform.position = pos;
-		rb.velocity = Vector3.zero;
-		canMove = true;
+	public void OnDash () {
+		if (dashTimer > 0) return;
+		if (status.Stamina < dashCost) return;
+
+		canMove = false;
+		dashStart = transform.position;
+		rb.AddForce ( transform.forward * dashPower, ForceMode.Impulse );
+		status.Stamina -= dashCost;
+		staminaRechargeTimer = staminaRechargeReady;
+		dashTimer = dashInterval;
 	}
 
-	void OnCollisionEnter ( Collision collision ) {
-		if (collision.gameObject.tag == "DropItem") {
-			var i = collision.gameObject.GetComponent<DropItem> ().Item;
-			for (int n = 0; n < MaxInventory; n++) {
-				// 同じアイテムなら, スロットが空なら
-				if (inventory[n].Item == i || inventory[n].Item == Items.Null) {
-					// 所持数限界未満なら
-					if (inventory[n].Volume < MaxVolume) {
-						inventory[n].Item = i;
-						inventory[n].Volume++;
-						Destroy ( collision.gameObject );
-						Debug.Log ( "ItemSlot : " + n + ", " + "ItemName : " + inventory[n].Item.ToString () + ", " + "ItemVolume : " + inventory[n].Volume );
-						break;
-					}
-				}
-			}
+	public void OnSelectItem ( InputValue value ) {
+		var axis = value.Get<float> ();
+		if (axis == -1) {
+			currentSelect--;
 		}
+		else if (axis == 1) {
+			currentSelect++;
+		}
+		// 配列で使う値なので最大値は-1しておく
+		currentSelect = UIFunctions.RevisionValue ( currentSelect, maxInventory - 1, UIFunctions.RevisionMode.Limit );
+		inventoryUI.UpdateCursorUI ( this );
 	}
 }

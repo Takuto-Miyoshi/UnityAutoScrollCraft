@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace Enum {
+namespace Enums {
 	public enum Items {
 		Null,
 		Wood,
