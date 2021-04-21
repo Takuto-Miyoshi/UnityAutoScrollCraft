@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 5349262666361771045}
   - component: {fileID: 5349262666361771034}
   - component: {fileID: 839216287477332170}
+  - component: {fileID: 8123198221300593654}
   - component: {fileID: 5349262666361771035}
   m_Layer: 0
   m_Name: Player
@@ -214,6 +215,7 @@ MonoBehaviour:
   speed: 5
   interact: {fileID: 6333268441196107005}
   interactInterval: 0.5
+  inventoryUI: {fileID: 0}
 --- !u!114 &839216287477332170
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,6 +232,19 @@ MonoBehaviour:
   hp: 0
   maxStamina: 100
   stamina: 0
+  attackPower: 3
+--- !u!114 &8123198221300593654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5349262666361771044}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8570f223e5cb5143a6ff4b992a0fa8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5349262666361771035
 MonoBehaviour:
   m_ObjectHideFlags: 0

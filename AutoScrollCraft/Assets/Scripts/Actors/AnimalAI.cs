@@ -35,7 +35,14 @@ public class AnimalAI : MonoBehaviour {
 				DropItem.Drop ( transform.position, dropItem, Random.Range ( 1, 4 ) );
 			}
 
-			Destroy ( gameObject );
+			Destroy ( gameObject, 0.01f );
+		}
+	}
+
+	void OnCollisionEnter ( Collision collision ) {
+		if (collision.gameObject.tag == "Projectile") {
+			status.Hp -= collision.gameObject.GetComponent<ProjectileBase> ().Damage;
+			Destroy ( collision.gameObject );
 		}
 	}
 }

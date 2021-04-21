@@ -28,8 +28,6 @@ public class ItemList : MonoBehaviour {
 		get { return names; }
 	}
 
-	[SerializeField] GameObject[] aaaa;
-
 	// Start is called before the first frame update
 	void Start () {
 		if (loaded == false) {
@@ -42,7 +40,6 @@ public class ItemList : MonoBehaviour {
 				textures[i] = (Texture)Resources.Load ( "Textures/UI/ItemIcons/" + names[i] );
 				objects[i] = (GameObject)Resources.Load ( "Items/" + names[i] );
 			}
-			aaaa = objects;
 		}
 	}
 

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using Enums;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -14,6 +15,9 @@ public class Player : MonoBehaviour {
 
 	// ステータス
 	Status status;
+	public Status Status {
+		get { return status; }
+	}
 	bool isDead;
 	// スタミナ
 	const float staminaRechargeReady = 3.0f;    // スタミナ回復が始まるまでの時間
@@ -64,12 +68,18 @@ public class Player : MonoBehaviour {
 		get { return currentSelect; }
 	}
 
+	// アイテム
+	ItemFunctions itemFunctions;
+	const float useInterval = 0.5f; // アイテムの使用間隔
+	float useTimer;
+
 	//----------------------------------------------------------------------
 
 	// Start is called before the first frame update
 	void Start () {
 		rb = GetComponent<Rigidbody> ();
 		status = GetComponent<Status> ();
+		itemFunctions = GetComponent<ItemFunctions> ();
 
 		respawnTime = 5.0f;
 		staminaRechargeTimer = staminaRechargeReady;
@@ -77,6 +87,7 @@ public class Player : MonoBehaviour {
 		isDead = false;
 		canMove = true;
 		interactTimer = interactInterval;
+		useTimer = useInterval;
 	}
 
 	// Update is called once per frame
@@ -115,6 +126,7 @@ public class Player : MonoBehaviour {
 		}
 
 		interactTimer -= Time.deltaTime;
+		useTimer -= Time.deltaTime;
 	}
 
 	void Update () {
@@ -123,7 +135,7 @@ public class Player : MonoBehaviour {
 		// スタミナ回復
 		staminaRechargeTimer -= Time.deltaTime;
 		if (staminaRechargeTimer < 0 && status.Stamina < status.MaxStamina) {
-			staminaRechargeTimer = 0.1f;
+			staminaRechargeTimer = 0.2f; // 毎フレーム回復するとまずいので
 			status.Stamina++;
 		}
 	}
@@ -155,7 +167,7 @@ public class Player : MonoBehaviour {
 
 	// アイテムを取得できるか
 	bool CanBeTakeItem ( int num, Items fallenItem ) {
-		return ((inventory[num].Item == fallenItem || inventory[num].Item == Items.Null) && inventory[num].Volume < maxVolume);
+		return (inventory[num].Item == fallenItem || inventory[num].Item == Items.Null) && inventory[num].Volume < maxVolume;
 	}
 
 	// ---------------入力系---------------------------
@@ -167,10 +179,11 @@ public class Player : MonoBehaviour {
 	public void OnInteract () {
 		if (interact.Target == null) return;
 		if (interactTimer > 0) return;
+		if (status.Stamina < interactCost) return;
 
 		status.Stamina -= interactCost;
 		staminaRechargeTimer = staminaRechargeReady;
-		interact.Target.GetComponent<Status> ().Hp--;
+		interact.Target.GetComponent<Status> ().Hp -= status.AttackPower;
 		interactTimer = interactInterval;
 	}
 
@@ -203,10 +216,23 @@ public class Player : MonoBehaviour {
 		if (inventory[currentSelect].Item == Items.Null) return;
 
 		inventory[currentSelect].Volume--;
+		// アイテムを地面に落とす
 		var l = ItemList.Names.ToList ();
 		var i = l.FindIndex ( x => x == inventory[currentSelect].Item.ToString () );
 		Instantiate ( ItemList.Objects[i], transform.position + transform.forward * 1.5f, Quaternion.identity );
-		Debug.Log ( "throw on : " + inventory[currentSelect].Item );
+		inventoryUI.UpdateInventoryUI ( this );
+	}
+
+	public void OnUseItem () {
+		if (inventory[currentSelect].Item == Items.Null) return;
+		if (useTimer > 0) return;
+
+		useTimer = useInterval;
+
+		if (itemFunctions.ExecItem ( inventory[currentSelect].Item ) == true) {
+			inventory[currentSelect].Volume--;
+		}
+
 		inventoryUI.UpdateInventoryUI ( this );
 	}
 }

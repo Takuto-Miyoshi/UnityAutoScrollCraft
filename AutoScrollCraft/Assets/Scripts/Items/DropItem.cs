@@ -20,7 +20,7 @@ public class DropItem : MonoBehaviour {
 
 	}
 
-	// アイテムを落とす
+	// 付近にアイテムを落とす
 	static public void Drop ( Vector3 pos, GameObject item, int value ) {
 		for (int i = 0; i < value; i++) {
 			pos.x += Random.Range ( -2.0f, 2.0f );
