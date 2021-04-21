@@ -198,4 +198,15 @@ public class Player : MonoBehaviour {
 		currentSelect = UIFunctions.RevisionValue ( currentSelect, maxInventory - 1, UIFunctions.RevisionMode.Limit );
 		inventoryUI.UpdateCursorUI ( this );
 	}
+
+	public void OnTrashItem () {
+		if (inventory[currentSelect].Item == Items.Null) return;
+
+		inventory[currentSelect].Volume--;
+		var l = ItemList.Names.ToList ();
+		var i = l.FindIndex ( x => x == inventory[currentSelect].Item.ToString () );
+		Instantiate ( ItemList.Objects[i], transform.position + transform.forward * 1.5f, Quaternion.identity );
+		Debug.Log ( "throw on : " + inventory[currentSelect].Item );
+		inventoryUI.UpdateInventoryUI ( this );
+	}
 }

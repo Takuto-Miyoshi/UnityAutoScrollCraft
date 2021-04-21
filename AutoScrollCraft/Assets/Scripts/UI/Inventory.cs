@@ -12,22 +12,11 @@ using UnityEngine.UI;
 public class Inventory : MonoBehaviour {
 	[SerializeField] RawImage[] itemSlots;
 	[SerializeField] Text[] itemNumTexts;
-	static string[] itemNames;
-	static Texture[] textures;
-	static bool loaded = false;
 	[SerializeField] RectTransform cursor;
 
 	// Start is called before the first frame update
 	void Start () {
-		// アイテムの画像をロードする
-		if (loaded == false) {
-			loaded = true;
-			Array.Resize ( ref textures, System.Enum.GetValues ( typeof ( Items ) ).Length );
-			itemNames = System.Enum.GetNames ( typeof ( Items ) );
-			for (int i = 0; i < itemNames.Length; i++) {
-				textures[i] = (Texture)Resources.Load ( "Textures/UI/ItemIcons/" + itemNames[i] );
-			}
-		}
+
 	}
 
 	// Update is called once per frame
@@ -37,7 +26,7 @@ public class Inventory : MonoBehaviour {
 
 	// インベントリUIを更新
 	public void UpdateInventoryUI ( Player player ) {
-		var l = itemNames.ToList ();
+		var l = ItemList.Names.ToList ();
 
 		for (int n = 0; n < player.Inventory.Length; n++) {
 			// １個以上持っているなら個数表示を更新
@@ -52,8 +41,8 @@ public class Inventory : MonoBehaviour {
 			}
 
 			// テクスチャを更新
-			var i = l.FindIndex ( x => x.ToString () == player.Inventory[n].Item.ToString () );
-			itemSlots[n].texture = textures[i];
+			var i = l.FindIndex ( x => x == player.Inventory[n].Item.ToString () );
+			itemSlots[n].texture = ItemList.Textures[i];
 		}
 	}
 
