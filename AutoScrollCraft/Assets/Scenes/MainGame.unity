@@ -134,6 +134,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cd25abb2915c1b4d97b977e97869151, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &158468747
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 158468749}
+  - component: {fileID: 158468748}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &158468748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158468747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fb81c7b20e6e1e43a2649957b15724c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &158468749
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 158468747}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 49.162216, y: 25.720367, z: 38.797966}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &309890438
 GameObject:
   m_ObjectHideFlags: 0
@@ -342,6 +385,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 0.01
+--- !u!114 &940574235 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4894027447462281156, guid: dc7d062e2676cf240a2fa58bafa51b46, type: 3}
+  m_PrefabInstance: {fileID: 6319466019278107324}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c05b7f152704994da5258f4fa4539d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1057494136
 GameObject:
   m_ObjectHideFlags: 0
@@ -793,6 +847,10 @@ PrefabInstance:
       propertyPath: camTrans
       value: 
       objectReference: {fileID: 520748226}
+    - target: {fileID: 5349262666361771034, guid: 62f01b32c898726409db334761b1dd41, type: 3}
+      propertyPath: craftWindow
+      value: 
+      objectReference: {fileID: 940574235}
     - target: {fileID: 5349262666361771034, guid: 62f01b32c898726409db334761b1dd41, type: 3}
       propertyPath: inventoryUI
       value: 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Enums;
 using UnityEngine;
 
@@ -46,5 +47,15 @@ public class ItemList : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+	}
+
+	static public GameObject GetGameObject ( Items item ) {
+		var n = names.ToList ().FindIndex ( x => x == item.ToString () );
+		return objects[n];
+	}
+
+	static public Texture GetTexture ( Items item ) {
+		var n = names.ToList ().FindIndex ( x => x == item.ToString () );
+		return textures[n];
 	}
 }

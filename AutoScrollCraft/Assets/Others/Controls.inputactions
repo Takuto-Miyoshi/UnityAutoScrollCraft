@@ -19,7 +19,7 @@
                     "id": "06c863b6-f8c5-4b20-95ef-5b06a3a9a6cd",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press"
                 },
                 {
                     "name": "Dash",
@@ -27,7 +27,7 @@
                     "id": "4dd85be4-d83d-4e1d-bcd9-bf7850b31ef6",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press"
                 },
                 {
                     "name": "SelectItem",
@@ -35,7 +35,7 @@
                     "id": "ae383d0f-1c48-4acc-90b1-483021af31ad",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press"
                 },
                 {
                     "name": "TrashItem",
@@ -43,7 +43,7 @@
                     "id": "b8fd3571-33a1-43b4-9c55-9553a64fd180",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press"
                 },
                 {
                     "name": "UseItem",
@@ -51,7 +51,31 @@
                     "id": "20395129-98ec-4ae9-a77e-345f588eb9e4",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press"
+                },
+                {
+                    "name": "Craft",
+                    "type": "Button",
+                    "id": "f434c5a4-9e56-49da-b0b7-84c91586cb95",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "CraftDetail",
+                    "type": "Button",
+                    "id": "b5a11a41-a5ad-4662-b18a-646da9b3f355",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "ChooseCraft",
+                    "type": "Value",
+                    "id": "46128d41-f5e0-4c0d-8711-46da6514239f",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -274,6 +298,116 @@
                     "action": "UseItem",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "20f6ee14-d06a-485c-88c3-5eed2001032e",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Craft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d5f2dc26-6a7a-4eec-9c70-0644164f971f",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Craft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a25b684a-df61-43c3-ac1f-94e2ccbbdeaf",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "CraftDetail",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f39d7675-0a7b-41fb-81d0-51838178e74e",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "CraftDetail",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "DPad",
+                    "id": "2548237c-ebeb-4d8a-b01b-90f0816d48a9",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChooseCraft",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "bc2a2a3e-49c7-4c56-b4cc-f17c269c0a27",
+                    "path": "<Gamepad>/dpad/left",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "ChooseCraft",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "7696fd3b-493b-40f5-bacd-79b2cf9372ef",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "ChooseCraft",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Arrow",
+                    "id": "00b004d6-a881-4c30-966c-532c37cbfb6c",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChooseCraft",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "25ee4552-bf7e-400e-ae44-a2ea6105be2a",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "ChooseCraft",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "6f960871-fa65-46b5-bf20-74653d3f411a",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "ChooseCraft",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }

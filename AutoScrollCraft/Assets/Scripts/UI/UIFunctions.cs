@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
 using UnityEditor.PackageManager.Requests;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
@@ -29,18 +31,27 @@ public class UIFunctions : MonoBehaviour {
 				if (value < 0) {
 					switch (mode) {
 						case RevisionMode.Limit: return 0;
-						case RevisionMode.Loop: return maxValue;
+						case RevisionMode.Loop:
+							var t = value;
+							while (t + maxValue + 1 <= maxValue) {
+								t += maxValue + 1;
+							}
+							return t;
 					}
 				}
 				return value;
 			case 0: return value;
 			case 1:
-				return mode switch
-				{
-					RevisionMode.Limit => maxValue,
-					RevisionMode.Loop => 0,
-					_ => 0,
-				};
+				switch (mode) {
+					case RevisionMode.Limit: return maxValue;
+					case RevisionMode.Loop:
+						var t = value;
+						while (t - (maxValue + 1) >= 0) {
+							t -= maxValue + 1;
+						}
+						return t;
+					default: return 0;
+				}
 			default: return 0;
 		}
 	}

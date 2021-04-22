@@ -1,11 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using Enums;
-using JetBrains.Annotations;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -63,15 +61,22 @@ public class Player : MonoBehaviour {
 		get { return inventory; }
 	}
 	[SerializeField] Inventory inventoryUI;
-	int currentSelect;
-	public int CurrentSelect {
-		get { return currentSelect; }
+	int currentSelectOnInventory;
+	public int CurrentSelectOnInventory {
+		get { return currentSelectOnInventory; }
 	}
 
 	// アイテム
 	ItemFunctions itemFunctions;
 	const float useInterval = 0.5f; // アイテムの使用間隔
 	float useTimer;
+
+	// クラフト
+	[SerializeField] CraftWindow craftWindow;
+	int currentSelectOnRecipe;
+	public int CurrentSelectOnRecipe {
+		get { return currentSelectOnRecipe; }
+	}
 
 	//----------------------------------------------------------------------
 
@@ -88,6 +93,12 @@ public class Player : MonoBehaviour {
 		canMove = true;
 		interactTimer = interactInterval;
 		useTimer = useInterval;
+		StartCoroutine ( StartDelay () );
+	}
+
+	IEnumerator StartDelay () {
+		yield return null;
+		craftWindow.UpdateCraftUI ( this );
 	}
 
 	// Update is called once per frame
@@ -151,28 +162,34 @@ public class Player : MonoBehaviour {
 
 	void OnCollisionEnter ( Collision collision ) {
 		// アイテム取得
-		if (collision.gameObject.tag == "DropItem") {
-			var i = collision.gameObject.GetComponent<DropItem> ().Item;
+		var obj = collision.gameObject;
+		if (obj.tag == "DropItem") {
+			var i = obj.GetComponent<DropItem> ().Item;
 			for (int n = 0; n < maxInventory; n++) {
-				if (CanBeTakeItem ( n, i )) {
-					inventory[n].Item = i;
-					inventory[n].Volume++;
-					Destroy ( collision.gameObject );
-					inventoryUI.UpdateInventoryUI ( this );
-					break;
+				if (inventory[n].Item == i && inventory[n].Volume < maxVolume) {
+					TakeItem ( n, i, obj );
+					return;
+				}
+			}
+
+			for (int n = 0; n < maxInventory; n++) {
+				if (inventory[n].Item == Items.Null) {
+					TakeItem ( n, i, obj );
+					return;
 				}
 			}
 		}
 	}
 
-	// アイテムを取得できるか
-	bool CanBeTakeItem ( int num, Items fallenItem ) {
-		return (inventory[num].Item == fallenItem || inventory[num].Item == Items.Null) && inventory[num].Volume < maxVolume;
+	void TakeItem ( int num, Items fallenItem, GameObject obj ) {
+		inventory[num].Item = fallenItem;
+		inventory[num].Volume++;
+		Destroy ( obj );
+		inventoryUI.UpdateInventoryUI ( this );
 	}
 
 	// ---------------入力系---------------------------
 	public void OnMove ( InputValue value ) {
-		// 入力値の更新
 		axis = value.Get<Vector2> ();
 	}
 
@@ -202,37 +219,75 @@ public class Player : MonoBehaviour {
 	public void OnSelectItem ( InputValue value ) {
 		var axis = value.Get<float> ();
 		if (axis == -1) {
-			currentSelect--;
+			currentSelectOnInventory--;
 		}
 		else if (axis == 1) {
-			currentSelect++;
+			currentSelectOnInventory++;
 		}
 		// 配列で使う値なので最大値は-1しておく
-		currentSelect = UIFunctions.RevisionValue ( currentSelect, maxInventory - 1, UIFunctions.RevisionMode.Limit );
+		currentSelectOnInventory = UIFunctions.RevisionValue ( currentSelectOnInventory, maxInventory - 1, UIFunctions.RevisionMode.Limit );
 		inventoryUI.UpdateCursorUI ( this );
 	}
 
 	public void OnTrashItem () {
-		if (inventory[currentSelect].Item == Items.Null) return;
+		if (inventory[currentSelectOnInventory].Item == Items.Null) return;
 
-		inventory[currentSelect].Volume--;
+		inventory[currentSelectOnInventory].Volume--;
 		// アイテムを地面に落とす
 		var l = ItemList.Names.ToList ();
-		var i = l.FindIndex ( x => x == inventory[currentSelect].Item.ToString () );
+		var i = l.FindIndex ( x => x == inventory[currentSelectOnInventory].Item.ToString () );
 		Instantiate ( ItemList.Objects[i], transform.position + transform.forward * 1.5f, Quaternion.identity );
 		inventoryUI.UpdateInventoryUI ( this );
 	}
 
 	public void OnUseItem () {
-		if (inventory[currentSelect].Item == Items.Null) return;
+		if (inventory[currentSelectOnInventory].Item == Items.Null) return;
 		if (useTimer > 0) return;
 
 		useTimer = useInterval;
 
-		if (itemFunctions.ExecItem ( inventory[currentSelect].Item ) == true) {
-			inventory[currentSelect].Volume--;
+		if (itemFunctions.ExecItem ( inventory[currentSelectOnInventory].Item ) == true) {
+			inventory[currentSelectOnInventory].Volume--;
 		}
 
 		inventoryUI.UpdateInventoryUI ( this );
+	}
+
+	public void OnCraft () {
+		if (Craft.CanBeCrafting ( inventory, currentSelectOnRecipe )) {
+			var target = Craft.Recipes[currentSelectOnRecipe];
+			{
+				var i = target.Result;
+				var n = target.ResultAmount;
+				DropItem.Drop ( transform.position, ItemList.GetGameObject ( i ), n );
+			}
+
+			// 持ち物を減らす
+			for (int m = 0; m < target.Materials.ToArray ().Length; m++) {
+				for (int i = 0; i < inventory.Length; i++) {
+					if (inventory[m].Item == target.Materials[m]) {
+						inventory[m].Volume -= target.MaterialAmountList[m];
+						break;
+					}
+				}
+			}
+			inventoryUI.UpdateInventoryUI ( this );
+		}
+	}
+
+	public void OnCraftDetail () {
+		craftWindow.Detail.SetActive ( !craftWindow.Detail.activeSelf );
+	}
+
+	public void OnChooseCraft ( InputValue value ) {
+		var axis = value.Get<float> ();
+		if (axis == -1) {
+			currentSelectOnRecipe--;
+		}
+		else if (axis == 1) {
+			currentSelectOnRecipe++;
+		}
+		currentSelectOnRecipe = UIFunctions.RevisionValue ( currentSelectOnRecipe, Craft.MaxRecipeNumber, UIFunctions.RevisionMode.Loop );
+		craftWindow.UpdateCraftUI ( this );
 	}
 }

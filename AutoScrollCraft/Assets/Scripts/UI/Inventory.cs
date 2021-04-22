@@ -48,7 +48,7 @@ public class Inventory : MonoBehaviour {
 
 	public void UpdateCursorUI ( Player player ) {
 		var pos = cursor.localPosition;
-		pos.x = player.CurrentSelect * cursor.sizeDelta.x;
+		pos.x = player.CurrentSelectOnInventory * cursor.sizeDelta.x;
 		cursor.localPosition = pos;
 	}
 }

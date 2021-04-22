@@ -16,7 +16,9 @@ public class ProjectileBase : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-
+		if (transform.position.y < -50) {
+			Destroy ( gameObject );
+		}
 	}
 
 	void OnCollisionEnter ( Collision collision ) {
