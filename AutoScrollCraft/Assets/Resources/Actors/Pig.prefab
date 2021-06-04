@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 7970696315625874801}
   m_Layer: 0
   m_Name: Pig
-  m_TagString: Object
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -134,6 +134,8 @@ MonoBehaviour:
   maxStamina: 0
   stamina: 0
   attackPower: 0
+  score: 50
+  objectType: 1
 --- !u!114 &3709259179156389099
 MonoBehaviour:
   m_ObjectHideFlags: 0

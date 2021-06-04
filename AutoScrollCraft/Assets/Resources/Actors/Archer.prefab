@@ -78,7 +78,7 @@ GameObject:
   - component: {fileID: 7606267613557140567}
   m_Layer: 0
   m_Name: Archer
-  m_TagString: Object
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -189,11 +189,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 807a4b82eae4fa743821f2ffffd0b355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 60
+  maxHp: 55
   hp: 0
   maxStamina: 0
   stamina: 0
   attackPower: 20
+  score: 150
+  objectType: 1
 --- !u!114 &7611311264779242139
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,8 +211,8 @@ MonoBehaviour:
   speed: 4
   updateInterval: 2
   dropItem: {fileID: 4439567660808180074, guid: 68352e9709b7d4644a12e9695ed50be8, type: 3}
-  dropAmountMax: 2
-  dropAmountMin: 4
+  dropAmountMax: 4
+  dropAmountMin: 2
   searchArea: {fileID: 7945223987822390480}
   arrow: {fileID: 779868923462116682, guid: a79b5e92c4c3f7547b2085e4a9ab9362, type: 3}
 --- !u!195 &7606267613557140566

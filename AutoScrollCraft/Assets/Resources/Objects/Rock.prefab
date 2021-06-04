@@ -230,6 +230,8 @@ MonoBehaviour:
   maxStamina: 0
   stamina: 0
   attackPower: 0
+  score: 30
+  objectType: 2
 --- !u!114 &4336392020260487624
 MonoBehaviour:
   m_ObjectHideFlags: 0

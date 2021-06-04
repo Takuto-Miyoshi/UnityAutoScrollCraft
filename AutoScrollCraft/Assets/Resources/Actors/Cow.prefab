@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 2229271585156232480}
   m_Layer: 0
   m_Name: Cow
-  m_TagString: Object
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -130,11 +130,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 807a4b82eae4fa743821f2ffffd0b355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 60
+  maxHp: 50
   hp: 0
   maxStamina: 0
   stamina: 0
   attackPower: 5
+  score: 100
+  objectType: 1
 --- !u!114 &637133789517194129
 MonoBehaviour:
   m_ObjectHideFlags: 0

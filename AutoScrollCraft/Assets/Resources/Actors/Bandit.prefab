@@ -159,7 +159,7 @@ GameObject:
   - component: {fileID: 5508819335727816780}
   m_Layer: 0
   m_Name: Bandit
-  m_TagString: Object
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -271,11 +271,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 807a4b82eae4fa743821f2ffffd0b355, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 80
+  maxHp: 70
   hp: 0
   maxStamina: 0
   stamina: 0
   attackPower: 10
+  score: 200
+  objectType: 1
 --- !u!114 &4584548779502655144
 MonoBehaviour:
   m_ObjectHideFlags: 0
