@@ -1,3 +1,4 @@
+using AutoScrollCraft.Sound;
 using UnityEngine;
 
 public class GameController : Singleton<GameController> {
@@ -8,6 +9,10 @@ public class GameController : Singleton<GameController> {
 		base.Awake ();
 		defaultCanvas.SetActive ( true );
 		gameOverScreen.SetActive ( false );
+	}
+
+	private void Start () {
+		SoundManager.PlayMainGameBGM ();
 	}
 
 	public void ShowGameOverScreen () {

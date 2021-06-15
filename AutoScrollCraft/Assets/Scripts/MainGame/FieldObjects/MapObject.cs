@@ -1,6 +1,7 @@
 using AutoScrollCraft.Actors;
 using AutoScrollCraft.Enums;
 using AutoScrollCraft.Items;
+using AutoScrollCraft.Sound;
 using UnityEngine;
 
 namespace AutoScrollCraft.FieldObjects {
@@ -16,6 +17,14 @@ namespace AutoScrollCraft.FieldObjects {
 
 		public bool TakeDamageProc ( int damage ) {
 			Status.Hp -= damage;
+
+			var s = status.ObjectType switch
+			{
+				ObjectType.Rock => SE.Damage_Rock,
+				ObjectType.Tree => SE.Damage_Tree,
+				_ => SE.Damage_Rock
+			};
+			SoundManager.Play ( s );
 
 			// HPが0になったらアイテムを落としてDestroy
 			if (Status.Hp <= 0) {

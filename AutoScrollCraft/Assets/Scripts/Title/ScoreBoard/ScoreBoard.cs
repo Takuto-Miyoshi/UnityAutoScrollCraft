@@ -1,3 +1,5 @@
+using AutoScrollCraft.Enums;
+using AutoScrollCraft.Sound;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -18,6 +20,7 @@ namespace AutoScrollCraft.UI {
 		}
 
 		public void OnCancel ( BaseEventData data ) {
+			SoundManager.Play ( SE.Cancel );
 			TitleManager.Instance.ChangeScreen ( TitleManager.TitleScreen );
 		}
 	}

@@ -1,3 +1,5 @@
+using AutoScrollCraft.Enums;
+using AutoScrollCraft.Sound;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -11,9 +13,6 @@ namespace AutoScrollCraft.UI {
 		private const int ScoreBoard = 1;
 		private const int QuitGame = 2;
 
-		private void Awake () {
-		}
-
 		private void Update () {
 			var p = titleMenus[currentSelect].localPosition;
 			p.x = Mathf.Abs ( Mathf.Sin ( Time.time * 3.0f ) ) * 100;
@@ -21,17 +20,23 @@ namespace AutoScrollCraft.UI {
 		}
 
 		public void OnMove ( BaseEventData data ) {
+			var i = currentSelect;
+
 			// メニューの移動
 			var axis = (data as AxisEventData).moveVector;
 			currentSelect -= (int)axis.y;
 			if (currentSelect < 0) currentSelect = 0;
 			if (currentSelect >= titleMenus.Length) currentSelect = titleMenus.Length - 1;
+			// 選択項目が変われば再生
+			if (i != currentSelect) SoundManager.Play ( SE.Cursor );
 			foreach (var o in titleMenus) {
 				o.localPosition = new Vector3 ( 0.0f, o.localPosition.y, 0.0f );
 			}
 		}
 
 		public void OnSubmit ( BaseEventData data ) {
+			SoundManager.Play ( SE.Submit );
+
 			// 選択項目へ
 			switch (currentSelect) {
 				case GameStart:
@@ -43,8 +48,7 @@ namespace AutoScrollCraft.UI {
 				case QuitGame:
 					Application.Quit ();
 					break;
-				default:
-					break;
+				default: break;
 			}
 		}
 	}
