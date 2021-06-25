@@ -46,6 +46,8 @@ namespace AutoScrollCraft.Actors {
 
 		// 移動
 		[SerializeField] private Transform cameraTrans;
+		private bool notMoving;
+		public bool NotMoving { get => notMoving; }
 		private Vector2 axis;
 		private bool canMove;
 		[SerializeField] private float speed;
@@ -55,6 +57,8 @@ namespace AutoScrollCraft.Actors {
 		private const float interactInterval = 0.5f;    // 間隔
 		private bool canInteract = true;
 		private const int interactCost = 5; // 消費スタミナ
+		private bool nearObject = false;    // KeyInfo表示用：オブジェクトが近くにある判定
+		public bool NearObject { get => nearObject; }
 
 		// インベントリ
 		private const int maxInventory = 3;
@@ -70,11 +74,15 @@ namespace AutoScrollCraft.Actors {
 		[SerializeField] private Inventory inventoryUI;
 		private int currentSelectOnInventory;
 		public int CurrentSelectOnInventory { get => currentSelectOnInventory; }
+		private bool fullInventory = false; // KeyInfo用：インベントリいっぱいフラグ
+		public bool FullInventory { get => fullInventory; }
 
 		// アイテム
 		private ItemFunctions itemFunctions;
 		private const float UseInterval = 0.5f; // アイテムの使用間隔
 		private bool canUsing = true;
+		private bool takeItem = false;  // KeyInfo用：アイテム取得フラグ
+		public bool TakeItem { get => takeItem; }
 
 		// クラフト
 		[SerializeField] private CraftWindow craftWindow;
@@ -112,6 +120,9 @@ namespace AutoScrollCraft.Actors {
 		private void FixedUpdate () {
 			if (isGameOver == true) return;
 
+			// 移動してないフラグ
+			notMoving = beforePos == transform.position;
+
 			if (canMove == true) {
 				// 移動
 				if (axis != Vector2.zero) {
@@ -143,7 +154,7 @@ namespace AutoScrollCraft.Actors {
 				}
 
 				// ダッシュしたのに停止している場合
-				if (beforePos == transform.position) {
+				if (notMoving == true) {
 					canMove = true;
 				}
 			}
@@ -183,7 +194,7 @@ namespace AutoScrollCraft.Actors {
 			status.Stamina++;
 			canRegenerateStamina = false;
 			// 移動中か待機中かによって次の回復までの時間を取得
-			var i = (beforePos == transform.position) ? StaminaRegenerateIntervalToWait : StaminaRegenerateInterval;
+			var i = (notMoving == true) ? StaminaRegenerateIntervalToWait : StaminaRegenerateInterval;
 			await UniTask.Delay ( TimeSpan.FromSeconds ( i ) );
 			canRegenerateStamina = true;
 		}
@@ -217,6 +228,9 @@ namespace AutoScrollCraft.Actors {
 						return;
 					}
 				}
+
+				// 拾えなかった場合
+				fullInventory = true;
 			}
 
 			// 発射体に対する判定
@@ -225,6 +239,11 @@ namespace AutoScrollCraft.Actors {
 				if (p.Master != gameObject) {
 					TakeDamageProc ( p.Damage );
 				}
+			}
+
+			// KeyInfo表示フラグ
+			if (o.tag == "Object" || o.tag == "NPC") {
+				nearObject = true;
 			}
 		}
 
@@ -265,6 +284,7 @@ namespace AutoScrollCraft.Actors {
 		}
 
 		private void PickUpItem ( int num, DroppedItem item ) {
+			takeItem = true;
 			inventory[num].Item = item.Item;
 			inventory[num].Amount++;
 			Destroy ( item.gameObject );
@@ -329,6 +349,8 @@ namespace AutoScrollCraft.Actors {
 
 		public async void OnDash () {
 			if (canDash == false) return;
+			if (canMove == false) return;
+			if (isGameOver == true) return;
 			if (status.Stamina < DashCost) return;
 
 			SoundManager.Play ( SE.Dash );
@@ -412,8 +434,9 @@ namespace AutoScrollCraft.Actors {
 		}
 
 		public void OnChooseCraft ( InputValue value ) {
-			SoundManager.Play ( SE.Craft_Cursor );
-			currentSelectOnRecipe += (int)value.Get<float> ();
+			var v = (int)value.Get<float> ();
+			currentSelectOnRecipe += v;
+			if (v != 0) SoundManager.Play ( SE.Craft_Cursor );
 			currentSelectOnRecipe = UIFunctions.RevisionValue ( currentSelectOnRecipe, Craft.MaxRecipeNumber, UIFunctions.RevisionMode.Loop );
 			craftWindow.UpdateCraftUI ( this );
 		}
