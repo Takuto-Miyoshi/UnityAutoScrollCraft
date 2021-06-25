@@ -38,19 +38,21 @@ namespace AutoScrollCraft.Actors {
 		}
 
 		public int MaxValue ( StatusType statusType ) {
-			switch (statusType) {
-				case StatusType.Hp: return maxHp;
-				case StatusType.Stamina: return maxStamina;
-				default: return 0;
-			}
+			return statusType switch
+			{
+				StatusType.Hp => maxHp,
+				StatusType.Stamina => maxStamina,
+				_ => 0
+			};
 		}
 
 		public int CurrentValue ( StatusType statusType ) {
-			switch (statusType) {
-				case StatusType.Hp: return hp;
-				case StatusType.Stamina: return stamina;
-				default: return 0;
-			}
+			return statusType switch
+			{
+				StatusType.Hp => hp,
+				StatusType.Stamina => stamina,
+				_ => 0
+			};
 		}
 	}
 }

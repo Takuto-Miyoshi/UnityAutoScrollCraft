@@ -35,7 +35,7 @@ namespace AutoScrollCraft.Items {
 			return Convert.ToBoolean ( o );
 		}
 
-		// アイテムの内部処理
+		// --------- アイテムの内部処理 ----------
 
 		public bool Wood () {
 			return false;
@@ -100,6 +100,7 @@ namespace AutoScrollCraft.Items {
 		}
 
 		private void InstantiateProjectile ( GameObject projectile ) {
+			// 発射体を生成
 			var o = Instantiate ( projectile, player.transform.position + player.transform.forward * 1.5f, player.transform.rotation );
 			o.GetComponent<ProjectileBase> ().Master = player.gameObject;
 		}

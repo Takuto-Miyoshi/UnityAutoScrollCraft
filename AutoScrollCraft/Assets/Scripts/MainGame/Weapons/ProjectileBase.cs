@@ -13,7 +13,7 @@ namespace AutoScrollCraft.Weapons {
 		}
 
 		private void Update () {
-			if (transform.position.y < -50) {
+			if (transform.position.y < -10) {
 				Destroy ( gameObject );
 			}
 		}
@@ -28,6 +28,7 @@ namespace AutoScrollCraft.Weapons {
 			if (gameObject.tag == "Projectile") {
 				if (o.tag == "Player" || o.tag == "NPC") {
 					if (master != o) {
+						// ダメージ処理等はダメージを受けた側で行う
 						Destroy ( gameObject );
 					}
 				}

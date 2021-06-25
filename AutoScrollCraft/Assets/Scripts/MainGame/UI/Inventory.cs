@@ -16,14 +16,14 @@ namespace AutoScrollCraft.UI {
 
 			for (int n = 0; n < player.Inventory.Length; n++) {
 				// １個以上持っているなら個数表示を更新
-				if (player.Inventory[n].Volume >= 1) {
-					itemNumTexts[n].text = player.Inventory[n].Volume.ToString ();
+				if (player.Inventory[n].Amount >= 1) {
+					itemNumTexts[n].text = player.Inventory[n].Amount.ToString ();
 				}
 				// 所持数0以下なら個数表示を消してアイテムを空にする
-				else if (player.Inventory[n].Volume <= 0) {
+				else if (player.Inventory[n].Amount <= 0) {
 					itemNumTexts[n].text = "";
 					player.Inventory[n].Item = Enums.Items.Null;
-					player.Inventory[n].Volume = 0;
+					player.Inventory[n].Amount = 0;
 				}
 
 				// テクスチャを更新

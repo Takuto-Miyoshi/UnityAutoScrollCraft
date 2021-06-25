@@ -1,5 +1,4 @@
 using AutoScrollCraft.Actors;
-using AutoScrollCraft.Enums;
 using AutoScrollCraft.Items;
 using AutoScrollCraft.Sound;
 using UnityEngine;
@@ -11,20 +10,15 @@ namespace AutoScrollCraft.FieldObjects {
 		[SerializeField] private GameObject dropItem;
 		[SerializeField] private GameObject decoration;
 
-		private void Start () {
+		private void Awake () {
 			Status = GetComponent<Status> ();
 		}
 
 		public bool TakeDamageProc ( int damage ) {
 			Status.Hp -= damage;
 
-			var s = status.ObjectType switch
-			{
-				ObjectType.Rock => SE.Damage_Rock,
-				ObjectType.Tree => SE.Damage_Tree,
-				_ => SE.Damage_Rock
-			};
-			SoundManager.Play ( s );
+			// 素材によって音を変えて再生
+			SoundManager.Play ( SoundManager.GetSEByObjectType ( status.ObjectType ) );
 
 			// HPが0になったらアイテムを落としてDestroy
 			if (Status.Hp <= 0) {

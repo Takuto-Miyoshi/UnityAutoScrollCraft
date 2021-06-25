@@ -1,34 +1,22 @@
-using System;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace AutoScrollCraft.Actors.AI {
 	public class Bandit : NPCBase {
 		[SerializeField] private SearchObject searchArea;
 		[SerializeField] private SearchObject attackArea;
-		protected override async void Update () {
-			base.Update ();
-
+		protected void Update () {
 			if (CanBeAction == true) {
-				if (searchArea.Detected == true || attackArea.Detected == true) {
-					UpdateInterval /= 2;
-
-					if (attackArea.Detected == true) {
-						AI.Rush ( this, attackArea.Target.transform.position );
-					}
-					else {
-						AI.Chase ( this, searchArea.Target.transform.position );
-					}
-
-					UpdateInterval *= 2;
+				if (attackArea.Detected == true) {
+					AI.Rush ( this, attackArea.Target.transform.position );
+				}
+				else if (searchArea.Detected == true) {
+					AI.Chase ( this, searchArea.Target.transform.position );
 				}
 				else {
 					AI.Wandering ( this );
 				}
 
-				CanBeAction = false;
-				await UniTask.Delay ( TimeSpan.FromSeconds ( UpdateInterval ) );
-				CanBeAction = true;
+				AfterActionDelay ();
 			}
 		}
 

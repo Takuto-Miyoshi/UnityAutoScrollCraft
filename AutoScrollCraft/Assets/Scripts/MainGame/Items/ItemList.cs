@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 namespace AutoScrollCraft.Enums {
+	// ↓アイテムはここに追加
 	public enum Items {
 		Null,
 		Wood,
@@ -38,17 +39,20 @@ namespace AutoScrollCraft.Items {
 		}
 
 		public GameObject GetGameObject ( Enums.Items item ) {
+			// 同名のオブジェクトを取得
 			var n = names.ToList ().FindIndex ( x => x == item.ToString () );
 			return objects[n];
 		}
 
 		public Texture GetTexture ( Enums.Items item ) {
+			// 同名のテクスチャを取得
 			var n = names.ToList ().FindIndex ( x => x == item.ToString () );
 			return images[n];
 		}
 
 		// 付近にアイテムを落とす
 		public void Drop ( Vector3 pos, GameObject item, int value ) {
+			// ドロップ数だけ周りにまき散らす
 			for (int i = 0; i < value; i++) {
 				var p = pos;
 				p.x += UnityEngine.Random.Range ( -2.0f, 2.0f );

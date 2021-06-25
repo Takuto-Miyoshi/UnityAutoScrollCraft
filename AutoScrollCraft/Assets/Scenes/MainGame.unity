@@ -1726,6 +1726,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9858af5a5a5a8db4f98d8e18a2c54fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  seMixer: {fileID: 5642830725525144081, guid: d641466e9a44bb9489ec85e8ce24bc1a, type: 2}
+  bgmMixer: {fileID: 3767735325890395903, guid: d641466e9a44bb9489ec85e8ce24bc1a, type: 2}
 --- !u!4 &2096455438
 Transform:
   m_ObjectHideFlags: 0
@@ -1805,6 +1807,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5349262666361771034, guid: 62f01b32c898726409db334761b1dd41, type: 3}
       propertyPath: camTrans
+      value: 
+      objectReference: {fileID: 520748226}
+    - target: {fileID: 5349262666361771034, guid: 62f01b32c898726409db334761b1dd41, type: 3}
+      propertyPath: cameraTrans
       value: 
       objectReference: {fileID: 520748226}
     - target: {fileID: 5349262666361771034, guid: 62f01b32c898726409db334761b1dd41, type: 3}

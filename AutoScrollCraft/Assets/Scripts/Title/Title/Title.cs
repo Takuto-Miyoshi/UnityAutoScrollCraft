@@ -39,15 +39,9 @@ namespace AutoScrollCraft.UI {
 
 			// 選択項目へ
 			switch (currentSelect) {
-				case GameStart:
-					SceneManager.LoadScene ( "MainGame" );
-					break;
-				case ScoreBoard:
-					TitleManager.Instance.ChangeScreen ( TitleManager.ScoreBoardScreen );
-					break;
-				case QuitGame:
-					Application.Quit ();
-					break;
+				case GameStart: SceneManager.LoadScene ( "MainGame" ); break;
+				case ScoreBoard: TitleManager.Instance.ChangeScreen ( TitleManager.ScoreBoardScreen ); break;
+				case QuitGame: Application.Quit (); break;
 				default: break;
 			}
 		}

@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace AutoScrollCraft.Actors.AI {
 	public class AIPattern : Singleton<AIPattern> {
-
 		/// <summary>
 		/// ランダムな場所を目的地にする
 		/// </summary>
@@ -59,22 +58,25 @@ namespace AutoScrollCraft.Actors.AI {
 		/// 飛翔体を飛ばす
 		/// </summary>
 		/// <param name="npc">発射するNPC</param>
-		/// <param name="target">攻撃する対象</param>
+		/// <param name="target">狙う場所</param>
 		/// <param name="projectile">発射するもの</param>
 		/// <param name="aimTime">狙う時間</param>
 		/// <param name="penetrate">射線の先がプレイヤーでなくても撃つかどうか</param>
 		public async void ShootProjectile ( NPCBase npc, Vector3 target, GameObject projectile, float aimTime = 0.5f, bool penetrate = false ) {
 			var d = target - npc.transform.position;
 			if (penetrate == false) {
+				// 射線の先がプレイヤーでないならウロウロする
 				Physics.Raycast ( npc.transform.position, d, out RaycastHit r );
 				if (r.collider.tag != "Player") {
 					Wandering ( npc );
 					return;
 				}
 			}
+
 			npc.transform.rotation = Quaternion.LookRotation ( d, Vector3.up );
 			var p = npc.transform.position;
 			p += npc.transform.forward;
+			// 指定秒待ってから発射
 			await UniTask.Delay ( System.TimeSpan.FromSeconds ( aimTime ) );
 			if (npc.gameObject == null) return;
 			var o = Instantiate ( projectile, p, npc.transform.rotation );

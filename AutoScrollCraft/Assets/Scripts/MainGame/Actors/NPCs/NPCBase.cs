@@ -2,6 +2,7 @@ using AutoScrollCraft.Enums;
 using AutoScrollCraft.Items;
 using AutoScrollCraft.Sound;
 using AutoScrollCraft.Weapons;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -12,8 +13,8 @@ namespace AutoScrollCraft.Actors.AI {
 		private Status status;
 		public virtual Status Status { get => status; set => status = value; }
 		// AI
-		private AIPattern aI;
-		public virtual AIPattern AI { get => aI; set => aI = value; }
+		private AIPattern ai;
+		public virtual AIPattern AI { get => ai; set => ai = value; }
 		[SerializeField] private float speed;
 		public virtual float Speed { get => speed; set => speed = value; }
 		private bool canBeAction = true;
@@ -32,7 +33,7 @@ namespace AutoScrollCraft.Actors.AI {
 		public virtual Vector3 DamageSource { get => damageSource; set => damageSource = value; }
 
 		protected virtual void Awake () {
-			aI = AIPattern.Instance;
+			ai = AIPattern.Instance;
 		}
 
 		// Start is called before the first frame update
@@ -42,10 +43,12 @@ namespace AutoScrollCraft.Actors.AI {
 		}
 
 		/// <summary>
-		/// overrideした時にbaseも呼び出す
+		/// 行動後に呼び出す
 		/// </summary>
-		protected virtual void Update () {
-
+		protected async void AfterActionDelay () {
+			canBeAction = false;
+			await UniTask.Delay ( System.TimeSpan.FromSeconds ( updateInterval ) );
+			canBeAction = true;
 		}
 
 		/// <summary>
@@ -59,15 +62,8 @@ namespace AutoScrollCraft.Actors.AI {
 				ItemList.Instance.Drop ( transform.position, DropItem, Random.Range ( DropAmountMin, DropAmountMax + 1 ) );
 			}
 
-			DeathProc ();
-
 			Destroy ( gameObject );
 		}
-
-		/// <summary>
-		/// IsDeadで呼び出される。
-		/// </summary>
-		protected virtual void DeathProc () { }
 
 		/// <summary>
 		/// ダメージを受けたときに呼び出される。
@@ -85,6 +81,7 @@ namespace AutoScrollCraft.Actors.AI {
 
 		protected virtual void OnCollisionEnter ( Collision collision ) {
 			var o = collision.gameObject;
+			// 発射体に対する判定
 			if (o.tag == "Projectile") {
 				var p = o.GetComponent<ProjectileBase> ();
 				if (p.Master != gameObject) {

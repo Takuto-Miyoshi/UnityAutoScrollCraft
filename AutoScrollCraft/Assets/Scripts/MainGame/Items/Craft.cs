@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace AutoScrollCraft.Items {
 	public class Craft : MonoBehaviour {
-		public struct CraftData {
+		// クラフトレシピの情報
+		public struct RecipeData {
 			private List<Enums.Items> materials;  // 素材
 			public List<Enums.Items> Materials { get => materials; set => materials = value; }
 			private List<int> materialAmountList;   // 素材数
@@ -12,7 +13,7 @@ namespace AutoScrollCraft.Items {
 			public Enums.Items Result { get => result; set => result = value; }
 			private int resultAmount;   // 生成量
 			public int ResultAmount { get => resultAmount; set => resultAmount = value; }
-			private int score;
+			private int score;  // クラフトしたときに得るスコア
 			public int Score { get => score; set => score = value; }
 			public void Reset () {
 				materials = new List<Enums.Items> ();
@@ -22,14 +23,13 @@ namespace AutoScrollCraft.Items {
 				score = 0;
 			}
 		}
-		private static CraftData tmpRecipe; // 下書き
-		private static List<CraftData> recipes = new List<CraftData> (); // レシピ集
-		public static List<CraftData> Recipes { get => recipes; }
+		private static RecipeData tmpRecipe; // 下書き
+		private static List<RecipeData> recipes = new List<RecipeData> (); // レシピ集
+		public static List<RecipeData> Recipes { get => recipes; }
 		private static int maxRecipeNumber;
 		public static int MaxRecipeNumber { get => maxRecipeNumber; }
 		private static bool loaded = false;
 
-		// Start is called before the first frame update
 		private void Start () {
 			if (loaded == false) {
 				loaded = true;
@@ -82,19 +82,19 @@ namespace AutoScrollCraft.Items {
 		// アイテムを作れるか
 		public static bool CanBeCrafting ( Actors.Player.ItemData[] inventory, int recipeNum ) {
 			var target = recipes[recipeNum];
-			bool[] complete = new bool[target.Materials.ToArray ().Length];
+			var complete = new bool[target.Materials.ToArray ().Length];
 			for (int n = 0; n < target.Materials.ToArray ().Length; n++) {
+				// 素材を持っているか
 				for (int m = 0; m < inventory.Length; m++) {
-					if (inventory[m].Item == target.Materials[n] && inventory[m].Volume >= target.MaterialAmountList[n]) {
+					// 数が足りるか
+					if (inventory[m].Item == target.Materials[n] && inventory[m].Amount >= target.MaterialAmountList[n]) {
 						complete[n] = true;
 						break;
 					}
 					else complete[n] = false;
 				}
 
-				if (complete[n] == false) {
-					return false;
-				}
+				if (complete[n] == false) return false;
 			}
 
 			return true;

@@ -7,6 +7,7 @@ public class LogoAnimation : MonoBehaviour {
 	private int target = 0;
 	private bool upperFlag = false;
 	private bool wait = false;
+
 	private async void Update () {
 		if (wait == true) return;
 

@@ -15,10 +15,6 @@ namespace AutoScrollCraft.UI {
 			}
 		}
 
-		private void Start () {
-
-		}
-
 		public void OnCancel ( BaseEventData data ) {
 			SoundManager.Play ( SE.Cancel );
 			TitleManager.Instance.ChangeScreen ( TitleManager.TitleScreen );

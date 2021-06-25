@@ -10,6 +10,7 @@ public class Score : MonoBehaviour {
 	}
 
 	private void FixedUpdate () {
+		// ゲームオーバー時は非表示にする
 		text.text = (player.IsGameOver == true) ? "" : "SCORE : " + player.Status.Score;
 	}
 }

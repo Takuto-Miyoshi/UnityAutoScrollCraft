@@ -1,9 +1,8 @@
 using System.Linq;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace AutoScrollCraft.World {
-	public class FieldGenelator : MonoBehaviour {
+	public class FieldGenerator : MonoBehaviour {
 		[SerializeField] private Terrain terrain;
 		private UnityEngine.Camera mainCamera;
 		[SerializeField] private GameObject[] appearFieldObjectList;
@@ -21,10 +20,6 @@ namespace AutoScrollCraft.World {
 			// オブジェクトを配置する
 			DeploymentObject ( 1, (int)DefaultSizeX, appearFieldObjectList );
 			DeploymentObject ( 1, (int)DefaultSizeX, appearNPCList, 5.0f, 15.0f );
-		}
-
-		private void Start () {
-
 		}
 
 		private void FixedUpdate () {

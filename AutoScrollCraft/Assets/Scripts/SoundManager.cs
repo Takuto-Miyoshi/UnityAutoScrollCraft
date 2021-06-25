@@ -90,5 +90,14 @@ namespace AutoScrollCraft.Sound {
 			BGM[] b = { BGM.MainGame1, BGM.MainGame2, BGM.MainGame3, BGM.MainGame4 };
 			Play ( b[UnityEngine.Random.Range ( 0, b.Length )] );
 		}
+
+		static public SE GetSEByObjectType ( ObjectType type ) {
+			return type switch
+			{
+				ObjectType.Rock => SE.Damage_Rock,
+				ObjectType.Tree => SE.Damage_Tree,
+				_ => SE.Damage_Rock
+			};
+		}
 	}
 }

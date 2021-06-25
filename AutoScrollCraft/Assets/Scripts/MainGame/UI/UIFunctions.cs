@@ -8,6 +8,7 @@ namespace AutoScrollCraft.UI {
 		};
 
 		public static int RevisionValue ( int value, int maxValue, RevisionMode mode = RevisionMode.Limit ) {
+			// valueとmaxValueを比較
 			var r = value.CompareTo ( maxValue );
 			switch (r) {
 				case -1:

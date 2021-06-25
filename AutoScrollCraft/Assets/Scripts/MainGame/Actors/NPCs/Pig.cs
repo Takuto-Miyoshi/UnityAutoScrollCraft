@@ -1,18 +1,12 @@
-using System;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace AutoScrollCraft.Actors.AI {
 	public class Pig : NPCBase {
-		protected override async void Update () {
-			base.Update ();
-
+		protected void Update () {
 			if (CanBeAction == true) {
 				AI.Wandering ( this );
 
-				CanBeAction = false;
-				await UniTask.Delay ( TimeSpan.FromSeconds ( UpdateInterval ) );
-				CanBeAction = true;
+				AfterActionDelay ();
 			}
 		}
 

@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using AutoScrollCraft;
 using AutoScrollCraft.Actors.AI;
 using AutoScrollCraft.Enums;
 using AutoScrollCraft.FieldObjects;
@@ -46,7 +45,7 @@ namespace AutoScrollCraft.Actors {
 		private const int FallenDamage = 30;
 
 		// 移動
-		[SerializeField] private Transform camTrans;
+		[SerializeField] private Transform cameraTrans;
 		private Vector2 axis;
 		private bool canMove;
 		[SerializeField] private float speed;
@@ -63,8 +62,8 @@ namespace AutoScrollCraft.Actors {
 		public struct ItemData {
 			private Enums.Items item;
 			public Enums.Items Item { get => item; set => item = value; }
-			private int volume;
-			public int Volume { get => volume; set => volume = value; }
+			private int amount;
+			public int Amount { get => amount; set => amount = value; }
 		}
 		private ItemData[] inventory = new ItemData[maxInventory];
 		public ItemData[] Inventory { get => inventory; }
@@ -83,13 +82,15 @@ namespace AutoScrollCraft.Actors {
 		public int CurrentSelectOnRecipe { get => currentSelectOnRecipe; }
 
 		// スコア
-		private int killScore;
+		private int killScore;  // 撃破によるスコア
 		public int KillScore { get => killScore; set => killScore = value; }
-		private int craftScore;
+		private int craftScore; // クラフトによるスコア
 		public int CraftScore { get => craftScore; set => craftScore = value; }
-		private int maxXDistance;
+		private int maxXDistance;   // Ｘ座標の最高到達点
 		public int MaxXDistance { get => maxXDistance; set => maxXDistance = value; }
-		private int distanceScore;
+		private const int DistanceBonus = 1000;
+		private const int ReceiveBonusDistance = 100;
+		private int distanceScore;  // 移動距離によるスコア
 		public int DistanceScore { get => distanceScore; set => distanceScore = value; }
 
 		//----------------------------------------------------------------------
@@ -114,7 +115,7 @@ namespace AutoScrollCraft.Actors {
 			if (canMove == true) {
 				// 移動
 				if (axis != Vector2.zero) {
-					var vel = camTrans.forward * axis.y + camTrans.right * axis.x;
+					var vel = cameraTrans.forward * axis.y + cameraTrans.right * axis.x;
 					vel.y = 0;
 					rigidBody.velocity = vel * speed;
 				}
@@ -153,9 +154,10 @@ namespace AutoScrollCraft.Actors {
 			beforePos = transform.position;
 
 			var beforeMax = maxXDistance;
+			// 最高到達点を更新
 			if (maxXDistance < (int)transform.position.x) maxXDistance = (int)transform.position.x;
 			// 前のX最大から次のボーナスポイントまでの距離 < 前のX最大から移動した距離
-			if (100 - (beforeMax % 100) < maxXDistance - beforeMax) SoundManager.Play ( SE.Hundred_Distance );
+			if (ReceiveBonusDistance - (beforeMax % ReceiveBonusDistance) < maxXDistance - beforeMax) SoundManager.Play ( SE.Hundred_Distance );
 
 			UpdateScore ();
 		}
@@ -180,6 +182,7 @@ namespace AutoScrollCraft.Actors {
 
 			status.Stamina++;
 			canRegenerateStamina = false;
+			// 移動中か待機中かによって次の回復までの時間を取得
 			var i = (beforePos == transform.position) ? StaminaRegenerateIntervalToWait : StaminaRegenerateInterval;
 			await UniTask.Delay ( TimeSpan.FromSeconds ( i ) );
 			canRegenerateStamina = true;
@@ -188,7 +191,7 @@ namespace AutoScrollCraft.Actors {
 		private void Respawn () {
 			TakeDamageProc ( FallenDamage );
 			// 画面の中心に戻す
-			var pos = new Vector3 ( camTrans.position.x, 1, 10 );
+			var pos = new Vector3 ( cameraTrans.position.x, 1, 10 );
 			transform.position = pos;
 			rigidBody.velocity = Vector3.zero;
 			canMove = true;
@@ -200,15 +203,15 @@ namespace AutoScrollCraft.Actors {
 			if (o.tag == "DropItem") {
 				var i = o.GetComponent<DroppedItem> ();
 				for (int n = 0; n < maxInventory; n++) {
-					// スタックする
-					if (inventory[n].Item == i.Item && inventory[n].Volume < maxVolume) {
+					// アイテムスロットに重ねる
+					if (inventory[n].Item == i.Item && inventory[n].Amount < maxVolume) {
 						PickUpItem ( n, i );
 						return;
 					}
 				}
 
 				for (int n = 0; n < maxInventory; n++) {
-					// 新しいスロットに入れる
+					// 空のスロットに入れる
 					if (inventory[n].Item == Enums.Items.Null) {
 						PickUpItem ( n, i );
 						return;
@@ -216,6 +219,7 @@ namespace AutoScrollCraft.Actors {
 				}
 			}
 
+			// 発射体に対する判定
 			if (o.tag == "Projectile") {
 				var p = o.GetComponent<ProjectileBase> ();
 				if (p.Master != gameObject) {
@@ -237,6 +241,7 @@ namespace AutoScrollCraft.Actors {
 			}
 
 			if (damage >= InvincibleDamage) {
+				// 一定時間無敵に
 				isInvincible = true;
 				InvincibleFlashing ();
 				await UniTask.Delay ( TimeSpan.FromSeconds ( InvincibleInterval ) );
@@ -244,6 +249,7 @@ namespace AutoScrollCraft.Actors {
 			}
 		}
 
+		// 点滅する
 		private async void InvincibleFlashing () {
 			var o = GetComponent<MeshRenderer> ();
 			if (isInvincible == false) {
@@ -260,7 +266,7 @@ namespace AutoScrollCraft.Actors {
 
 		private void PickUpItem ( int num, DroppedItem item ) {
 			inventory[num].Item = item.Item;
-			inventory[num].Volume++;
+			inventory[num].Amount++;
 			Destroy ( item.gameObject );
 			inventoryUI.UpdateInventoryUI ( this );
 		}
@@ -269,7 +275,7 @@ namespace AutoScrollCraft.Actors {
 			// 進んだ距離
 			distanceScore = maxXDistance * 10;
 			// 100ごとに+1000
-			distanceScore += maxXDistance / 100 * 1000;
+			distanceScore += maxXDistance / ReceiveBonusDistance * DistanceBonus;
 
 			status.Score = distanceScore;
 			status.Score += killScore;
@@ -291,8 +297,10 @@ namespace AutoScrollCraft.Actors {
 
 			Physics.Raycast ( transform.position, transform.forward, out RaycastHit r, 1.5f );
 			bool attacked = false;
+			if (r.collider == null) return;
+
 			// 適正ツールでないならプレイヤーの攻撃力を適用
-			if (r.collider?.GetComponent<Status> ().ObjectType != criticalTarget || criticalTarget == ObjectType.None) {
+			if (r.collider.GetComponent<Status> ()?.ObjectType != criticalTarget || criticalTarget == ObjectType.None) {
 				attackPower = status.AttackPower;
 			}
 
@@ -311,6 +319,7 @@ namespace AutoScrollCraft.Actors {
 			}
 
 			if (attacked == true) {
+				// 攻撃した時の挙動
 				status.Stamina -= interactCost;
 				canInteract = false;
 				await UniTask.Delay ( TimeSpan.FromSeconds ( interactInterval ) );
@@ -324,6 +333,7 @@ namespace AutoScrollCraft.Actors {
 
 			SoundManager.Play ( SE.Dash );
 
+			// 前方向に移動を加える
 			canMove = false;
 			dashStart = transform.position;
 			rigidBody.AddForce ( transform.forward * DashPower, ForceMode.Impulse );
@@ -347,7 +357,7 @@ namespace AutoScrollCraft.Actors {
 		public void OnTrashItem () {
 			if (inventory[currentSelectOnInventory].Item == Enums.Items.Null) return;
 
-			inventory[currentSelectOnInventory].Volume--;
+			inventory[currentSelectOnInventory].Amount--;
 			// アイテムを地面に落とす
 			var l = ItemList.Instance.Names.ToList ();
 			var i = l.FindIndex ( x => x == inventory[currentSelectOnInventory].Item.ToString () );
@@ -360,7 +370,7 @@ namespace AutoScrollCraft.Actors {
 			if (canUsing == false) return;
 
 			if (itemFunctions.Exec ( inventory[currentSelectOnInventory].Item ) == true) {
-				inventory[currentSelectOnInventory].Volume--;
+				inventory[currentSelectOnInventory].Amount--;
 			}
 
 			inventoryUI.UpdateInventoryUI ( this );
@@ -374,6 +384,7 @@ namespace AutoScrollCraft.Actors {
 			if (Craft.CanBeCrafting ( inventory, currentSelectOnRecipe )) {
 				SoundManager.Play ( SE.Craft );
 
+				// レシピを取得して成果物をドロップ
 				var target = Craft.Recipes[currentSelectOnRecipe];
 				{
 					var i = target.Result;
@@ -386,7 +397,7 @@ namespace AutoScrollCraft.Actors {
 				for (int m = 0; m < target.Materials.Count; m++) {
 					for (int i = 0; i < inventory.Length; i++) {
 						if (inventory[m].Item == target.Materials[m]) {
-							inventory[m].Volume -= target.MaterialAmountList[m];
+							inventory[m].Amount -= target.MaterialAmountList[m];
 							break;
 						}
 					}
