@@ -39,13 +39,11 @@ namespace AutoScrollCraft.Sound {
 		private List<string> SENameList = new List<string> ();
 		private List<AudioClip> BGMList = new List<AudioClip> ();
 		private List<string> BGMNameList = new List<string> ();
-		private AudioSource audioSource;
-		[SerializeField] private AudioMixerGroup seMixer;
-		[SerializeField] private AudioMixerGroup bgmMixer;
+		[SerializeField] private AudioSource seAudioSource;
+		[SerializeField] private AudioSource bgmAudioSource;
 
 		public override void Awake () {
 			base.Awake ();
-			audioSource = GetComponent<AudioSource> ();
 
 			// enumの名前を元にSE読み込み
 			SENameList = Enum.GetNames ( typeof ( SE ) ).ToList ();
@@ -67,8 +65,7 @@ namespace AutoScrollCraft.Sound {
 		static public void Play ( SE sound ) {
 			var s = sound.ToString ();
 			var i = Instance.SENameList.FindIndex ( x => x == s );
-			Instance.audioSource.outputAudioMixerGroup = Instance.seMixer;
-			Instance.audioSource.PlayOneShot ( Instance.SEList[i] );
+			Instance.seAudioSource.PlayOneShot ( Instance.SEList[i] );
 		}
 
 		/// <summary>
@@ -78,9 +75,8 @@ namespace AutoScrollCraft.Sound {
 		static public void Play ( BGM sound ) {
 			var s = sound.ToString ();
 			var i = Instance.BGMNameList.FindIndex ( x => x == s );
-			Instance.audioSource.clip = Instance.BGMList[i];
-			Instance.audioSource.outputAudioMixerGroup = Instance.bgmMixer;
-			Instance.audioSource.Play ();
+			Instance.bgmAudioSource.clip = Instance.BGMList[i];
+			Instance.bgmAudioSource.Play ();
 		}
 
 		/// <summary>

@@ -15,6 +15,7 @@ namespace AutoScrollCraft.Actors {
 	public class Player : MonoBehaviour {
 		private Rigidbody rigidBody;
 		private const float RespawnTime = 5.0f;
+		private bool disabledOperation = false;
 
 		// ステータス
 		private Status status;
@@ -119,6 +120,7 @@ namespace AutoScrollCraft.Actors {
 
 		private void FixedUpdate () {
 			if (isGameOver == true) return;
+			if (disabledOperation == true) return;
 
 			// 移動してないフラグ
 			notMoving = beforePos == transform.position;
@@ -256,6 +258,7 @@ namespace AutoScrollCraft.Actors {
 			// HPが0以下ならゲームオーバー
 			if (status.Hp <= 0) {
 				isGameOver = true;
+				Pause.Instance.TogglePause ( false );
 				GameController.Instance.ShowGameOverScreen ();
 			}
 
@@ -304,10 +307,12 @@ namespace AutoScrollCraft.Actors {
 
 		// ---------------入力系---------------------------
 		public void OnMove ( InputValue value ) {
+			if (disabledOperation == true) return;
 			axis = value.Get<Vector2> ();
 		}
 
 		public void OnInteract () {
+			if (disabledOperation == true) return;
 			Interact ( status.AttackPower, ObjectType.None );
 		}
 
@@ -348,6 +353,7 @@ namespace AutoScrollCraft.Actors {
 		}
 
 		public async void OnDash () {
+			if (disabledOperation == true) return;
 			if (canDash == false) return;
 			if (canMove == false) return;
 			if (isGameOver == true) return;
@@ -369,14 +375,17 @@ namespace AutoScrollCraft.Actors {
 		}
 
 		public void OnSelectItem ( InputValue value ) {
-			SoundManager.Play ( SE.Inventory_Cursor );
-			currentSelectOnInventory += (int)value.Get<float> ();
+			if (disabledOperation == true) return;
+			var v = (int)value.Get<float> ();
+			currentSelectOnInventory += v;
+			if (v != 0) SoundManager.Play ( SE.Inventory_Cursor );
 			// 配列で使う値なので最大値は-1しておく
 			currentSelectOnInventory = UIFunctions.RevisionValue ( currentSelectOnInventory, maxInventory - 1, UIFunctions.RevisionMode.Limit );
 			inventoryUI.UpdateCursorUI ( this );
 		}
 
 		public void OnTrashItem () {
+			if (disabledOperation == true) return;
 			if (inventory[currentSelectOnInventory].Item == Enums.Items.Null) return;
 
 			inventory[currentSelectOnInventory].Amount--;
@@ -388,6 +397,7 @@ namespace AutoScrollCraft.Actors {
 		}
 
 		public async void OnUseItem () {
+			if (disabledOperation == true) return;
 			if (inventory[currentSelectOnInventory].Item == Enums.Items.Null) return;
 			if (canUsing == false) return;
 
@@ -403,6 +413,7 @@ namespace AutoScrollCraft.Actors {
 		}
 
 		public void OnCraft () {
+			if (disabledOperation == true) return;
 			if (Craft.CanBeCrafting ( inventory, currentSelectOnRecipe )) {
 				SoundManager.Play ( SE.Craft );
 
@@ -429,16 +440,27 @@ namespace AutoScrollCraft.Actors {
 		}
 
 		public void OnCraftDetail () {
+			if (disabledOperation == true) return;
+
 			SoundManager.Play ( SE.Craft_Detail );
 			craftWindow.Detail.SetActive ( !craftWindow.Detail.activeSelf );
 		}
 
 		public void OnChooseCraft ( InputValue value ) {
+			if (disabledOperation == true) return;
+
 			var v = (int)value.Get<float> ();
 			currentSelectOnRecipe += v;
 			if (v != 0) SoundManager.Play ( SE.Craft_Cursor );
 			currentSelectOnRecipe = UIFunctions.RevisionValue ( currentSelectOnRecipe, Craft.MaxRecipeNumber, UIFunctions.RevisionMode.Loop );
 			craftWindow.UpdateCraftUI ( this );
+		}
+
+		public void OnPause () {
+			if (isGameOver == true) return;
+
+			disabledOperation = Pause.Instance.TogglePause ();
+			axis = Vector2.zero;
 		}
 	}
 }

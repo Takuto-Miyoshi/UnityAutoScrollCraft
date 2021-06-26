@@ -70,6 +70,8 @@ namespace AutoScrollCraft.UI {
 			target.color = c;
 			// フェード
 			while (true) {
+				if (target == null) return;
+
 				c = target.color;
 				c.a += Time.deltaTime * m;
 				target.color = c;
