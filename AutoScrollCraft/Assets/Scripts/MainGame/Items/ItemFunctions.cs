@@ -10,8 +10,8 @@ namespace AutoScrollCraft.Items {
 
 		// 効果
 		private GameObject stone;
-		private const int PorkEfficacy = 10;
-		private const int BeefEfficacy = 15;
+		private const int PorkEfficacy = 15;
+		private const int BeefEfficacy = 10;
 		private GameObject arrow;
 		private const int AxePower = 10;
 		private const int PickaxePower = 8;
@@ -52,7 +52,7 @@ namespace AutoScrollCraft.Items {
 		}
 
 		public bool Beef () {
-			StaminaHeal ( BeefEfficacy );
+			HpHeal ( BeefEfficacy );
 			return true;
 		}
 

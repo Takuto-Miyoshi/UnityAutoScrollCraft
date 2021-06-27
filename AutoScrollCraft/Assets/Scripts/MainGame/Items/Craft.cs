@@ -45,11 +45,13 @@ namespace AutoScrollCraft.Items {
 				AddMaterial ( Enums.Items.Wood, 2 );
 				AddMaterial ( Enums.Items.Stone, 4 );
 				SetResult ( Enums.Items.Pickaxe, 1 );
+				SetScore ( 30 );
 				AddRecipe ();
 				// 剣
 				AddMaterial ( Enums.Items.Wood, 1 );
 				AddMaterial ( Enums.Items.Stone, 4 );
 				SetResult ( Enums.Items.Sword, 1 );
+				SetScore ( 30 );
 				AddRecipe ();
 				// ------------------------------------------
 				maxRecipeNumber = recipes.ToArray ().Length - 1;

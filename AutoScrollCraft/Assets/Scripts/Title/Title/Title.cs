@@ -11,7 +11,8 @@ namespace AutoScrollCraft.UI {
 		// メニュー番号
 		private const int GameStart = 0;
 		private const int ScoreBoard = 1;
-		private const int QuitGame = 2;
+		private const int Option = 2;
+		private const int QuitGame = 3;
 
 		private void Update () {
 			var p = titleMenus[currentSelect].localPosition;
@@ -41,6 +42,7 @@ namespace AutoScrollCraft.UI {
 			switch (currentSelect) {
 				case GameStart: SceneManager.LoadScene ( "MainGame" ); break;
 				case ScoreBoard: TitleManager.Instance.ChangeScreen ( TitleManager.ScoreBoardScreen ); break;
+				case Option: TitleManager.Instance.ChangeScreen ( TitleManager.OptionScreen ); break;
 				case QuitGame: Application.Quit (); break;
 				default: break;
 			}

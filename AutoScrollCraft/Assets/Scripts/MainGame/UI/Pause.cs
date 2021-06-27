@@ -6,6 +6,9 @@ using UnityEngine.UI;
 namespace AutoScrollCraft.UI {
 	public class Pause : Singleton<Pause> {
 		[SerializeField] private GameObject pauseMenu;
+		[SerializeField] private GameObject option;
+		[SerializeField] private GameObject status;
+		[SerializeField] private EventSystem eventSystem;
 		private bool pause;
 		[SerializeField] private Text[] textList;
 		[SerializeField] private Image cursor;
@@ -35,9 +38,7 @@ namespace AutoScrollCraft.UI {
 
 		private void ShowPauseMenu () {
 			pauseMenu.SetActive ( pause );
-		}
-
-		private void Update () {
+			status.SetActive ( !pause );
 		}
 
 		public void OnMove ( BaseEventData data ) {
@@ -53,7 +54,10 @@ namespace AutoScrollCraft.UI {
 
 			switch (currentSelect) {
 				case Continue: TogglePause ( false ); return;
-				case Option: /* オプション画面を開く */; return;
+				case Option:
+					option.SetActive ( true );
+					eventSystem.SetSelectedGameObject ( option );
+					return;
 				case Resume:
 					TogglePause ( false );
 					SceneManager.LoadScene ( "MainGame" );

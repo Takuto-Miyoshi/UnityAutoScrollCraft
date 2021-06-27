@@ -87,5 +87,10 @@ namespace AutoScrollCraft.UI {
 				await UniTask.NextFrame ();
 			}
 		}
+
+		// "true"ならtrue、それ以外はfalse
+		public static bool StringToBool ( string str ) {
+			return str == true.ToString ();
+		}
 	}
 }
