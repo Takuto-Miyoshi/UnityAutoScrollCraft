@@ -8,13 +8,12 @@ using UnityEngine.UI;
 namespace AutoScrollCraft.UI {
 	public class KeyInfoManager : MonoBehaviour {
 		[SerializeField] Player player;
-		private const float ShowingTime = 5.0f;
 		// -------- moveKey ----------
 		[SerializeField] List<Image> moveKeys;
 		private bool showingMoveKey = false;
-		private float notMovingTime = 0.0f;
-		private const float NeedShowingMoveKeyTime = 5.0f;
-		// -------- trashKey --------
+		private float notMovingTime = 0.0f; // 動いていない時間
+		private const float NeedShowingMoveKeyTime = 5.0f;  // 移動キーTipsを表示するのに求める時間
+															// -------- trashKey --------
 		[SerializeField] Image trashKey;
 		private bool showedTrash = false;
 		// -------- interactKey --------

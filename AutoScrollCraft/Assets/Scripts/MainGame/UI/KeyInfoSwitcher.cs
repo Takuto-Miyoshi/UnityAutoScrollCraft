@@ -4,8 +4,9 @@ using UnityEngine;
 namespace AutoScrollCraft.UI {
 	public class KeyInfoSwitcher : MonoBehaviour {
 		private void Awake () {
-			var s = PlayerPrefs.GetString ( CheckBox.Type.KeyInfo.ToString () );
-			gameObject.SetActive ( UIFunctions.StringToBool ( s ) );
+			// キーTipsを表示するかをセーブデータより設定する
+			var boolStr = PlayerPrefs.GetString ( CheckBox.Kind.KeyInfo.ToString () );
+			gameObject.SetActive ( UIFunctions.StringToBool ( boolStr ) );
 		}
 	}
 }

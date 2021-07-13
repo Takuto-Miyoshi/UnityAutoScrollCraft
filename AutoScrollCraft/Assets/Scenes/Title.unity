@@ -2151,6 +2151,7 @@ MonoBehaviour:
   - {fileID: 1217442003}
   - {fileID: 293516043}
   - {fileID: 1085161669}
+  currentSelect: 0
 --- !u!114 &788132543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5639,5 +5640,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 689142005565915886, guid: 61831139948100443accc7b1db1766e2, type: 3}
+      propertyPath: eventSystem
+      value: 
+      objectReference: {fileID: 990398283}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 61831139948100443accc7b1db1766e2, type: 3}

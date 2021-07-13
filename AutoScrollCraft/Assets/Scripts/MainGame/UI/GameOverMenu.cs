@@ -1,6 +1,7 @@
+using System.Linq;
+using AutoScrollCraft.Scene;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 
 namespace AutoScrollCraft.UI {
 	public class GameOverMenu : MonoBehaviour {
@@ -12,24 +13,22 @@ namespace AutoScrollCraft.UI {
 		private const int BackToTitle = 1;
 
 		private void Start () {
-			menuList[PlayAgain].localPosition = new Vector3 ( 0, 0, 0 );
-			menuList[BackToTitle].localPosition = new Vector3 ( 0, -140, 0 );
+			menuList[PlayAgain].localPosition.Set ( 0, 0, 0 );
+			menuList[BackToTitle].localPosition.Set ( 0, -140, 0 );
 			cursor.localPosition = menuList[currentSelect].localPosition;
 		}
 
 		public void OnMove ( BaseEventData data ) {
 			// カーソル移動
 			var axis = (data as AxisEventData).moveVector;
-			currentSelect -= (int)axis.y;
-			if (currentSelect < 0) currentSelect = 0;
-			if (currentSelect >= menuList.Length) currentSelect = menuList.Length - 1;
+			currentSelect = UIFunctions.RevisionValue ( currentSelect - (int)axis.y, menuList.Count () - 1 );
 			cursor.localPosition = menuList[currentSelect].localPosition;
 		}
 
 		public void OnSubmit ( BaseEventData data ) {
 			switch (currentSelect) {
-				case PlayAgain: SceneManager.LoadScene ( "MainGame" ); break;
-				case BackToTitle: SceneManager.LoadScene ( "Title" ); break;
+				case PlayAgain: SceneManager.LoadScene ( SceneList.MainGame ); break;
+				case BackToTitle: SceneManager.LoadScene ( SceneList.Title ); break;
 				default: break;
 			}
 		}

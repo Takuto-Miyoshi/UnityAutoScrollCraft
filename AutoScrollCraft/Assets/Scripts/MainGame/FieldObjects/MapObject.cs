@@ -18,7 +18,7 @@ namespace AutoScrollCraft.FieldObjects {
 			Status.Hp -= damage;
 
 			// 素材によって音を変えて再生
-			SoundManager.Play ( SoundManager.GetSEByObjectType ( status.ObjectType ) );
+			SoundManager.Instance.Play ( SoundManager.Instance.GetSEByObjectType ( status.ObjectType ) );
 
 			// HPが0になったらアイテムを落としてDestroy
 			if (Status.Hp <= 0) {

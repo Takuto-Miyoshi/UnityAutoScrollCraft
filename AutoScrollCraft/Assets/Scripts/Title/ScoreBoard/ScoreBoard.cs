@@ -9,14 +9,15 @@ namespace AutoScrollCraft.UI {
 		[SerializeField] private Text[] scoreList;
 
 		private void Awake () {
-			var s = ScoreManager.Instance.GetRanking ();
+			var ranking = ScoreManager.Instance.GetRanking ();
+
 			for (int i = 0; i < scoreList.Length; i++) {
-				scoreList[i].text = s[i].ToString ();
+				scoreList[i].text = ranking[i].ToString ();
 			}
 		}
 
 		public void OnCancel ( BaseEventData data ) {
-			SoundManager.Play ( SE.Cancel );
+			SoundManager.Instance.Play ( SE.Cancel );
 			TitleManager.Instance.ChangeScreen ( TitleManager.TitleScreen );
 		}
 	}

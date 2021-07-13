@@ -74,7 +74,7 @@ namespace AutoScrollCraft.Actors.AI {
 		public virtual bool TakeDamageProc ( int damage, Vector3 damageFrom ) {
 			status.Hp -= damage;
 			damageSource = damageFrom;
-			SoundManager.Play ( SE.Damage_NPC );
+			SoundManager.Instance.Play ( SE.Damage_NPC );
 			IsDead ();
 			return status.Hp <= 0;
 		}

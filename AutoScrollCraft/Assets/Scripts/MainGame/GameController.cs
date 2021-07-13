@@ -7,12 +7,13 @@ public class GameController : Singleton<GameController> {
 
 	public override void Awake () {
 		base.Awake ();
+
 		defaultCanvas.SetActive ( true );
 		gameOverScreen.SetActive ( false );
 	}
 
 	private void Start () {
-		SoundManager.PlayMainGameBGM ();
+		SoundManager.Instance.PlayMainGameBGM ();
 	}
 
 	public void ShowGameOverScreen () {

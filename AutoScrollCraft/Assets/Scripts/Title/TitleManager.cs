@@ -15,11 +15,13 @@ namespace AutoScrollCraft.UI {
 		public const int OptionScreen = 2;
 
 		private async void Start () {
-			SoundManager.Play ( BGM.Title );
+			SoundManager.Instance.Play ( BGM.Title );
+			// 他のオブジェクトの読み込みを待つ
 			await UniTask.Delay ( 10 );
 			ChangeScreen ( TitleScreen );
 		}
 
+		// タイトルシーン内で画面を切り替える
 		public void ChangeScreen ( int nextScreen ) {
 			screens.ForEach ( e => e.SetActive ( false ) );
 			screens[nextScreen].SetActive ( true );

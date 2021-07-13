@@ -1,3 +1,4 @@
+using ExtentionMethod;
 using UnityEngine;
 
 namespace AutoScrollCraft.UI {
@@ -11,9 +12,8 @@ namespace AutoScrollCraft.UI {
 		}
 
 		private void Update () {
-			var p = rect.localPosition;
-			p.y = Mathf.Abs ( Mathf.Sin ( Time.realtimeSinceStartup * speed ) ) * jumpScale;
-			rect.localPosition = p;
+			var value = Mathf.Abs ( Mathf.Sin ( Time.realtimeSinceStartup * speed ) ) * jumpScale;
+			rect.localPosition = rect.localPosition.SetY ( value );
 		}
 	}
 }

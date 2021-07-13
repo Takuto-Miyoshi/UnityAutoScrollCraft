@@ -17,23 +17,41 @@ namespace AutoScrollCraft.UI {
 		private const int Resume = 2;
 		private const int BackToTitle = 3;
 		private int currentSelect = 0;
+		private float NormalTimeScale = 1.0f;
+		private float PauseTimeScale = 0.0f;
 
 		public override void Awake () {
 			base.Awake ();
+
 			TogglePause ( false );
 		}
 
+		/// <summary>
+		/// ポーズ状態を反転させる
+		/// </summary>
+		/// <returns>変更後の状態</returns>
 		public bool TogglePause () {
 			pause = !pause;
-			Time.timeScale = (pause == true) ? 0.0f : 1.0f;
+			SetTimeScale ();
 			ShowPauseMenu ();
 			return pause;
 		}
 
+		/// <summary>
+		/// ポーズ状態を設定する
+		/// </summary>
+		/// <param name="mode">設定する値</param>
 		public void TogglePause ( bool mode ) {
 			pause = mode;
-			Time.timeScale = (pause == true) ? 0.0f : 1.0f;
+			SetTimeScale ();
 			ShowPauseMenu ();
+		}
+
+		/// <summary>
+		/// ポーズの状態を元にTimeScaleを変更する
+		/// </summary>
+		private void SetTimeScale () {
+			Time.timeScale = (pause == true) ? PauseTimeScale : NormalTimeScale;
 		}
 
 		private void ShowPauseMenu () {
@@ -45,7 +63,7 @@ namespace AutoScrollCraft.UI {
 			if (pause == false) return;
 
 			var axis = (data as AxisEventData).moveVector;
-			currentSelect = UIFunctions.RevisionValue ( currentSelect - (int)axis.y, textList.Length );
+			currentSelect = UIFunctions.RevisionValue ( currentSelect - (int)axis.y, textList.Length - 1 );
 			cursor.rectTransform.position = textList[currentSelect].rectTransform.position;
 		}
 

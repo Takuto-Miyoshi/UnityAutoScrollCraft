@@ -170,7 +170,7 @@ namespace AutoScrollCraft.Actors {
 			// 最高到達点を更新
 			if (maxXDistance < (int)transform.position.x) maxXDistance = (int)transform.position.x;
 			// 前のX最大から次のボーナスポイントまでの距離 < 前のX最大から移動した距離
-			if (ReceiveBonusDistance - (beforeMax % ReceiveBonusDistance) < maxXDistance - beforeMax) SoundManager.Play ( SE.Hundred_Distance );
+			if (ReceiveBonusDistance - (beforeMax % ReceiveBonusDistance) < maxXDistance - beforeMax) SoundManager.Instance.Play ( SE.Hundred_Distance );
 
 			UpdateScore ();
 		}
@@ -252,7 +252,7 @@ namespace AutoScrollCraft.Actors {
 		public async void TakeDamageProc ( int damage ) {
 			if (isInvincible == true) return;
 
-			SoundManager.Play ( SE.Damage_Player );
+			SoundManager.Instance.Play ( SE.Damage_Player );
 
 			status.Hp -= damage;
 			// HPが0以下ならゲームオーバー
@@ -359,7 +359,7 @@ namespace AutoScrollCraft.Actors {
 			if (isGameOver == true) return;
 			if (status.Stamina < DashCost) return;
 
-			SoundManager.Play ( SE.Dash );
+			SoundManager.Instance.Play ( SE.Dash );
 
 			// 前方向に移動を加える
 			canMove = false;
@@ -378,7 +378,7 @@ namespace AutoScrollCraft.Actors {
 			if (disabledOperation == true) return;
 			var v = (int)value.Get<float> ();
 			currentSelectOnInventory += v;
-			if (v != 0) SoundManager.Play ( SE.Inventory_Cursor );
+			if (v != 0) SoundManager.Instance.Play ( SE.Inventory_Cursor );
 			// 配列で使う値なので最大値は-1しておく
 			currentSelectOnInventory = UIFunctions.RevisionValue ( currentSelectOnInventory, maxInventory - 1, UIFunctions.RevisionMode.Limit );
 			inventoryUI.UpdateCursorUI ( this );
@@ -390,7 +390,7 @@ namespace AutoScrollCraft.Actors {
 
 			inventory[currentSelectOnInventory].Amount--;
 			// アイテムを地面に落とす
-			var l = ItemList.Instance.Names.ToList ();
+			var l = ItemList.Instance.ItemNameList.ToList ();
 			var i = l.FindIndex ( x => x == inventory[currentSelectOnInventory].Item.ToString () );
 			Instantiate ( ItemList.Instance.Objects[i], transform.position + transform.forward * 1.5f, Quaternion.identity );
 			inventoryUI.UpdateInventoryUI ( this );
@@ -415,7 +415,7 @@ namespace AutoScrollCraft.Actors {
 		public void OnCraft () {
 			if (disabledOperation == true) return;
 			if (Craft.CanBeCrafting ( inventory, currentSelectOnRecipe )) {
-				SoundManager.Play ( SE.Craft );
+				SoundManager.Instance.Play ( SE.Craft );
 
 				// レシピを取得して成果物をドロップ
 				var target = Craft.Recipes[currentSelectOnRecipe];
@@ -442,7 +442,7 @@ namespace AutoScrollCraft.Actors {
 		public void OnCraftDetail () {
 			if (disabledOperation == true) return;
 
-			SoundManager.Play ( SE.Craft_Detail );
+			SoundManager.Instance.Play ( SE.Craft_Detail );
 			craftWindow.Detail.SetActive ( !craftWindow.Detail.activeSelf );
 		}
 
@@ -451,7 +451,7 @@ namespace AutoScrollCraft.Actors {
 
 			var v = (int)value.Get<float> ();
 			currentSelectOnRecipe += v;
-			if (v != 0) SoundManager.Play ( SE.Craft_Cursor );
+			if (v != 0) SoundManager.Instance.Play ( SE.Craft_Cursor );
 			currentSelectOnRecipe = UIFunctions.RevisionValue ( currentSelectOnRecipe, Craft.MaxRecipeNumber, UIFunctions.RevisionMode.Loop );
 			craftWindow.UpdateCraftUI ( this );
 		}

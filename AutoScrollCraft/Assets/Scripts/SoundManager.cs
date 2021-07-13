@@ -1,12 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoScrollCraft.Enums;
 using UnityEngine;
-using UnityEngine.Audio;
 
 namespace AutoScrollCraft.Enums {
-	// サウンドファイル名
+	// SEファイル名
 	public enum SE {
 		Cursor, // カーソル移動
 		Submit, // 決定
@@ -35,64 +33,67 @@ namespace AutoScrollCraft.Enums {
 
 namespace AutoScrollCraft.Sound {
 	public class SoundManager : Singleton<SoundManager> {
-		private List<AudioClip> SEList = new List<AudioClip> ();
-		private List<string> SENameList = new List<string> ();
-		private List<AudioClip> BGMList = new List<AudioClip> ();
-		private List<string> BGMNameList = new List<string> ();
+		private List<AudioClip> SEList = new List<AudioClip> ();    // ロードしたSEを格納
+		private List<string> SENameList = new List<string> ();  // SEの名前を格納
+		private List<AudioClip> BGMList = new List<AudioClip> ();   // ロードしたBGMを格納
+		private List<string> BGMNameList = new List<string> (); // BGMの名前を格納
 		[SerializeField] private AudioSource seAudioSource;
 		[SerializeField] private AudioSource bgmAudioSource;
 
 		public override void Awake () {
 			base.Awake ();
 
-			// enumの名前を元にSE読み込み
-			SENameList = Enum.GetNames ( typeof ( SE ) ).ToList ();
-			foreach (var n in SENameList) {
-				SEList.Add ( (AudioClip)Resources.Load ( "Sounds/SE/" + n ) );
-			}
+			SENameList = System.Enum.GetNames ( typeof ( SE ) ).ToList ();
+			// SEの名前を元にロード
+			SENameList.ForEach ( x => SEList.Add ( (AudioClip)Resources.Load ( "Sounds/SE/" + x ) ) );
 
-			// BGM読み込み
-			BGMNameList = Enum.GetNames ( typeof ( BGM ) ).ToList ();
-			foreach (var n in BGMNameList) {
-				BGMList.Add ( (AudioClip)Resources.Load ( "Sounds/BGM/" + n ) );
-			}
+			// BGMのロード
+			BGMNameList = System.Enum.GetNames ( typeof ( BGM ) ).ToList ();
+			BGMNameList.ForEach ( x => BGMList.Add ( (AudioClip)Resources.Load ( "Sounds/BGM/" + x ) ) );
 		}
 
 		/// <summary>
 		/// SEを再生
 		/// </summary>
 		/// <param name="sound">再生するSE</param>
-		static public void Play ( SE sound ) {
-			var s = sound.ToString ();
-			var i = Instance.SENameList.FindIndex ( x => x == s );
-			Instance.seAudioSource.PlayOneShot ( Instance.SEList[i] );
+		public void Play ( SE sound ) {
+			var target = sound.ToString ();
+			// 指定されたSEと同じものを探す
+			var index = Instance.SENameList.FindIndex ( x => x == target );
+			Instance.seAudioSource.PlayOneShot ( Instance.SEList[index] );
 		}
 
 		/// <summary>
 		/// BGMを再生
 		/// </summary>
 		/// <param name="sound">再生するBGM</param>
-		static public void Play ( BGM sound ) {
-			var s = sound.ToString ();
-			var i = Instance.BGMNameList.FindIndex ( x => x == s );
-			Instance.bgmAudioSource.clip = Instance.BGMList[i];
+		public void Play ( BGM sound ) {
+			var target = sound.ToString ();
+			// 指定されたBGMと同じものを探す
+			var index = Instance.BGMNameList.FindIndex ( x => x == target );
+			Instance.bgmAudioSource.clip = Instance.BGMList[index];
 			Instance.bgmAudioSource.Play ();
 		}
 
 		/// <summary>
 		/// メインゲームBGMをランダムに再生
 		/// </summary>
-		static public void PlayMainGameBGM () {
-			BGM[] b = { BGM.MainGame1, BGM.MainGame2, BGM.MainGame3, BGM.MainGame4 };
-			Play ( b[UnityEngine.Random.Range ( 0, b.Length )] );
+		public void PlayMainGameBGM () {
+			BGM[] bgm = { BGM.MainGame1, BGM.MainGame2, BGM.MainGame3, BGM.MainGame4 };
+			Play ( bgm[Random.Range ( 0, bgm.Length )] );
 		}
 
-		static public SE GetSEByObjectType ( ObjectType type ) {
+		/// <summary>
+		/// オブジェクトタイプを元にSEを取得
+		/// </summary>
+		/// <param name="type">オブジェクトの種類</param>
+		/// <returns>enum SE</returns>
+		public SE GetSEByObjectType ( ObjectType type ) {
 			return type switch
 			{
 				ObjectType.Rock => SE.Damage_Rock,
 				ObjectType.Tree => SE.Damage_Tree,
-				_ => SE.Damage_Rock
+				_ => SE.Damage_Rock // 適当に返す
 			};
 		}
 	}

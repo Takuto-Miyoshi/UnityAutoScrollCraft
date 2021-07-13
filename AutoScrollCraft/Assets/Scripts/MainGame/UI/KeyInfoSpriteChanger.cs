@@ -15,8 +15,8 @@ namespace AutoScrollCraft.UI {
 
 		private const string keyboard = "Keyboard";
 		private const string gamepad = "Gamepad";
-		private string currentScheme = keyboard;
-		private bool wait = false;
+		private string usingScheme = keyboard;
+		private bool wait = false;  // await管理用
 		private int currentSelect = 0;
 		private const float Interval = 0.5f;
 
@@ -26,14 +26,14 @@ namespace AutoScrollCraft.UI {
 		}
 
 		private void Update () {
-			var s = playerInput.currentControlScheme;
-			if (s != currentScheme) {
-				currentScheme = s;
+			var currentScheme = playerInput.currentControlScheme;
+			if (currentScheme != usingScheme) {
+				usingScheme = currentScheme;
 				ResetAnimationValue ();
 
 				if (gamepadTexSmaller == true) {
 					var size = image.rectTransform.sizeDelta;
-					size.x = (currentScheme == gamepad) ? defaultWidth / WidthSmallerScale : defaultWidth;
+					size.x = (usingScheme == gamepad) ? defaultWidth / WidthSmallerScale : defaultWidth;
 					image.rectTransform.sizeDelta = size;
 				}
 			}
@@ -45,13 +45,19 @@ namespace AutoScrollCraft.UI {
 			if (wait == true) return;
 
 			wait = true;
-			var spriteList = (currentScheme == gamepad) ? gamepadTex : keyboardTex;
+
+			// 現在のスキームに応じてテクスチャを読み込み
+			var spriteList = (usingScheme == gamepad) ? gamepadTex : keyboardTex;
 			image.sprite = spriteList[currentSelect];
 			currentSelect = UIFunctions.RevisionValue ( currentSelect + 1, spriteList.Length - 1, UIFunctions.RevisionMode.Loop );
 			await UniTask.Delay ( System.TimeSpan.FromSeconds ( Interval ) );
+
 			wait = false;
 		}
 
+		/// <summary>
+		/// アニメーションの状態をリセットする
+		/// </summary>
 		private void ResetAnimationValue () {
 			wait = false;
 			currentSelect = 0;
