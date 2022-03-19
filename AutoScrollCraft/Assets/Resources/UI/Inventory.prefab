@@ -731,10 +731,7 @@ MonoBehaviour:
   - {fileID: 301965704767319009}
   - {fileID: 301965704542869734}
   - {fileID: 301965704851429945}
-  itemNumTexts:
-  - {fileID: 301965703867097083}
-  - {fileID: 301965703086211046}
-  - {fileID: 301965704822004230}
+  itemNumberString: []
   cursor: {fileID: 4199339720115407163}
 --- !u!1 &1033078043110981316
 GameObject:
@@ -748,6 +745,7 @@ GameObject:
   - component: {fileID: 7592095050413448520}
   - component: {fileID: 5015721075844574662}
   - component: {fileID: 3045092944219711939}
+  - component: {fileID: 8393235692375983850}
   m_Layer: 5
   m_Name: RightKeyInfo
   m_TagString: Untagged
@@ -831,6 +829,18 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   gamepadTexSmaller: 0
+--- !u!114 &8393235692375983850
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033078043110981316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 778cfe8510e29e544878bb828c04e378, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3858946248906127372
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,6 +853,7 @@ GameObject:
   - component: {fileID: 23621664944620441}
   - component: {fileID: 6421005227324761522}
   - component: {fileID: 9159456095531532899}
+  - component: {fileID: 5588647454473598732}
   m_Layer: 5
   m_Name: LeftKeyInfo
   m_TagString: Untagged
@@ -926,6 +937,18 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   gamepadTexSmaller: 0
+--- !u!114 &5588647454473598732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3858946248906127372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 778cfe8510e29e544878bb828c04e378, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5821212079196598020
 GameObject:
   m_ObjectHideFlags: 0
@@ -937,7 +960,6 @@ GameObject:
   - component: {fileID: 4199339720115407163}
   - component: {fileID: 7797863340155834409}
   - component: {fileID: 2246003691925178810}
-  - component: {fileID: 1338360022246888119}
   m_Layer: 5
   m_Name: Cursor
   m_TagString: Untagged
@@ -1004,15 +1026,3 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1338360022246888119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5821212079196598020}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 778cfe8510e29e544878bb828c04e378, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
